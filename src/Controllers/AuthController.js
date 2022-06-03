@@ -12,10 +12,6 @@ register = async (req , res , next)=>{
         return res.json({message:'User exist'})
     }
     //check if the cardNumber Exist
-    const card = UserModel.findOne({cardNumber})
-    if(card){
-        return res.json("Invalid Card Number")
-    }
 
     const NewUser = new UserModel({
         FirstName,LastName,email,password,cardNumber,expirationDate,securityCode

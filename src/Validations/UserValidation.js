@@ -15,6 +15,16 @@ const signup =Joi.object({
     securityCode:Joi.number().min(3).max(4)
 })
 
+const UpdateUser = Joi.object({
+    FirstName: Joi.string().required(),
+    LastName : Joi.string().required(),
+    email : Joi.string()
+    .email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net"] },
+    }).required(),
+})
+
 const validateSignUp = (req , res  , next)=>{
     const validation = signup.validate(req.body)
     if(validation.error){
@@ -22,4 +32,11 @@ const validateSignUp = (req , res  , next)=>{
     }
     next()
 };
-module.exports = {validateSignUp}
+
+const valdateUpdateUser = (req , res , next)=>{
+    const validation = UpdateUser.validate(req.body)
+    if(validation.error){
+        return res.json(validation.error.message)
+    }
+}
+module.exports = {validateSignUp,valdateUpdateUser}

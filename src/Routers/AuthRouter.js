@@ -2,13 +2,8 @@ const express = require('express')
 const router = express.Router() 
 const {register} = require('../Controllers/AuthController')
 const {body , validationResult} = require('express-validator')
+const {validateSignUp} = require('../Validations/UserValidation')
 
-router.post('/register' , 
-body('email').isEmail().isEmpty(),
-body('password').isEmpty(),
-body('expirationDate').isDate(),
-body('securityCode').isLength({min : 3 , max:4})
-
-, register)
+router.post('/register' , validateSignUp, register)
 
 module.exports = router

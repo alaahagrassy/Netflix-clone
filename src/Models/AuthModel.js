@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const salt_round = Number(process.env.salt_rounds)
 const jwt = require('jsonwebtoken');
 const util = require('util')
 const sign = util.promisify(jwt.sign)
@@ -29,11 +30,8 @@ const UserModel = new Schema({
 
     },
     cardNumber:{
-        type: String,
+        type: Number,
         required:[true, 'Card Number required'],
-        index:{
-            unique:[true , "Invalid"]
-        }
     },
     expirationDate:{
         type:Date,
@@ -46,18 +44,19 @@ const UserModel = new Schema({
 })
 
  ////hashing password
-UserModel.pre('save' , async (next)=>{
-     bcrypt.genSalt(process.env.salt_rounds , function(err,salt){
-         bcrypt.hash(this.password , salt ,function(err,hash){
-             this.password = hash
-             next()
-         } )
-     })
-    
-})
+ UserModel.pre('save', function (next) {
+    var user = this;
+    bcrypt.genSalt(salt_round, function (err, salt) {
+        bcrypt.hash(user.password, salt, function (err, hash) {
+            user.password = hash;
+            next();
+        });
+    });
+
+});
 
 ////comapre password
-UserModel.method,comparepassword = function(pass){
+UserModel.methods.comparepassword = function(pass){
     return bcrypt.compare(pass,this.password)
 }
 
@@ -72,7 +71,7 @@ UserModel.methods.generatToken = function(){
         expirationDate:JSON.stringify(this.expirationDate),
         securityCode:JSON.stringify(this.securityCode)
     },
-    'secret'
+    process.env.jwt_secret
     )
 }
 

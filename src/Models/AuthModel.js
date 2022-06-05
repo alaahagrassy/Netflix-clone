@@ -42,7 +42,7 @@ const UserModel = new Schema({
         // required:[true , 'security Code required']
     },
     role :{
-        type:String,
+        type:String,    
         default:'user'
     }
 })

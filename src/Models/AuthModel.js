@@ -62,7 +62,7 @@ UserModel.methods.comparepassword = function(pass){
 
 //generate token
 UserModel.methods.generatToken = function(){
-    return jwt.sign({
+     return jwt.sign({
         _id:JSON.stringify(this._id),
         FirstName:JSON.stringify(this.FirstName),
         LastName:JSON.stringify(this.LastName),

@@ -13,19 +13,18 @@ register = async (req, res, next) => {
     }
 
 
-    const NewUser = new UserModel({
+    const AddUser = new UserModel({
         FirstName, LastName, email, password, cardNumber, expirationDate, securityCode
-    }).save()
-        .then(data => {
-            const token = data.generatToken();
-            if (!token)
-                return res.json("error")
-            return res.json({ token })
-        }).catch(err => {
-            res.json({
-                message: err
-            })
-        })
+    })
+    try{
+    const NewUser = await AddUser.save();
+    const token = await NewUser.generatToken();
+    if(!token)
+    return res.json('Error')
+    return res.status(200).json({token})
+    }catch(err){
+        return res.status(500).json('Server Error ')
+    }
 }
 
 ///login function

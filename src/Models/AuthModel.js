@@ -9,13 +9,9 @@ const verify = util.promisify(jwt.verify)
 const { Schema } = mongoose
 const { model } = mongoose
 const UserModel = new Schema({
-    FirstName: {
+    userName: {
         type: String,
-        required: [true, 'First Name is required'],
-    },
-    LastName: {
-        type: String,
-        required: [true, 'Last Name is required'],
+        required: [true, 'User name is required'],
     },
     email: {
         type: String,
@@ -41,10 +37,15 @@ const UserModel = new Schema({
         type: Number,
         // required:[true , 'security Code required']
     },
-    role :{
+    isAdmin :{
+       type:Boolean,
+       default:false
+    },
+    avatar:{
         type:String,
-        default:'user'
-    }
+    },
+    
+
 })
 
 ////hashing password
@@ -68,8 +69,7 @@ UserModel.methods.comparepassword = function (pass) {
 UserModel.methods.generatToken = function () {
     return sign({
         _id: JSON.stringify(this._id),
-        FirstName: JSON.stringify(this.FirstName),
-        LastName: JSON.stringify(this.LastName),
+        userName: JSON.stringify(this.userName),
         email: JSON.stringify(this.email),
         cardNumber: JSON.stringify(this.cardNumber),
         expirationDate: JSON.stringify(this.expirationDate),
@@ -87,7 +87,7 @@ UserModel.statics.getCurrentUser = async function (token) {
           email:JSON.parse(decoded.email)
     })
     currentUser._id = JSON.parse(decoded._id)
-    currentUser.role = JSON.parse(decoded.role)
+    currentUser.isAdmin = JSON.parse(decoded.isAdmin)
     if(!currentUser)throw new Error("user not found")
     return currentUser
     } catch (err) {

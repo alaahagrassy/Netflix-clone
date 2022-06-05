@@ -6,7 +6,7 @@ const AuthorizeAdmin = async (req , res , next)=>{
 
     const token = req.headers.authorization
     const user = await UserModel.getCurrentUser(token)
-    if(user.role !=="admin")
+    if(!user.isAdmin)
     return res.json("Authorization Failed")
     next();
 }

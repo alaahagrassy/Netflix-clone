@@ -2,8 +2,7 @@ const Joi = require('@hapi/joi')
 // Joi.objectId = require('joi-objectid')(Joi)
 
 const signup =Joi.object({
-    FirstName: Joi.string().required(),
-    LastName : Joi.string().required(),
+    userName: Joi.string().required(),
     email : Joi.string()
     .email({
         minDomainSegments: 2,
@@ -13,12 +12,11 @@ const signup =Joi.object({
     cardNumber:Joi.number(),
     expirationDate:Joi.date(),
     securityCode:Joi.number().min(3).max(4),
-    role: Joi.string()
+    isAdmin: Joi.boolean()
 })
 
 const UpdateUser = Joi.object({
-    FirstName: Joi.string(),
-    LastName : Joi.string(),
+    userName: Joi.string(),
     email : Joi.string()
     .email({
         minDomainSegments: 2,

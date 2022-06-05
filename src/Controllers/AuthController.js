@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator')
 //register function
 
 register = async (req, res, next) => {
-    const { FirstName, LastName, email, password, cardNumber, expirationDate, securityCode,role } = req.body
+    const { email, password,isAdmin } = req.body
     const user = await UserModel.findOne({ email })
 
     // check if email Exist 
@@ -12,7 +12,7 @@ register = async (req, res, next) => {
         return res.json({ message: 'User exist' })
     }
     const AddUser = new UserModel({
-        FirstName, LastName, email, password, cardNumber, expirationDate, securityCode,role
+        email, password,isAdmin
     })
     try{
     const NewUser = await AddUser.save();
@@ -47,10 +47,10 @@ logIn = async (req, res) => {
 
 edit = async (req, res) => {
     const { id } = req.params
-    const { FirstName, LastName, email } = req.body
+    const {userName, email  , cardNumber,expirationDate,securityCode} = req.body
     try {
         const user = await UserModel.findByIdAndUpdate(id, {
-            FirstName, LastName, email
+            userName, email , cardNumber,expirationDate,securityCode
         })
         res.status(200).json('Updated Successfully')
     }

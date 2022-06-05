@@ -3,6 +3,7 @@ const ListModel = require("../Models/ListModel");
 //create
 const createList = async (req, res) => {
   const List = req.body;
+  console.log(List);
   const newList = new ListModel(List);
   try {
     const saved = await newList.save();

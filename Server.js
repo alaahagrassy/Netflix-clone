@@ -17,7 +17,7 @@ app.use('/user' ,UserRouter)
 app.use('/movie' ,MovieRouter)
 
 // List Router
-app.use('/ist' ,ListRouter)
+app.use('/list' ,ListRouter)
 
 
 app.listen(PORT, () => {

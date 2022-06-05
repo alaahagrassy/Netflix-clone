@@ -4,28 +4,25 @@ const { validationResult } = require('express-validator')
 //register function
 
 register = async (req, res, next) => {
-    const { FirstName, LastName, email, password, cardNumber, expirationDate, securityCode } = req.body
+    const { FirstName, LastName, email, password, cardNumber, expirationDate, securityCode,role } = req.body
     const user = await UserModel.findOne({ email })
 
     // check if email Exist 
     if (user) {
         return res.json({ message: 'User exist' })
     }
-
-
-    const NewUser = new UserModel({
-        FirstName, LastName, email, password, cardNumber, expirationDate, securityCode
-    }).save()
-        .then(data => {
-            const token = data.generatToken();
-            if (!token)
-                return res.json("error")
-            return res.json({ token })
-        }).catch(err => {
-            res.json({
-                message: err
-            })
-        })
+    const AddUser = new UserModel({
+        FirstName, LastName, email, password, cardNumber, expirationDate, securityCode,role
+    })
+    try{
+    const NewUser = await AddUser.save();
+    const token = await NewUser.generatToken();
+    if(!token)
+    return res.json('Error')
+    return res.status(200).json({token})
+    }catch(err){
+        return res.status(500).json('Server Error ')
+    }
 }
 
 ///login function

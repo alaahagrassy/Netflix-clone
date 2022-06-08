@@ -2,7 +2,7 @@ const Joi = require('@hapi/joi')
 // Joi.objectId = require('joi-objectid')(Joi)
 
 const signup =Joi.object({
-    userName: Joi.string().required(),
+    userName: Joi.string(),
     email : Joi.string()
     .email({
         minDomainSegments: 2,
@@ -21,7 +21,8 @@ const UpdateUser = Joi.object({
     .email({
         minDomainSegments: 2,
         tlds: { allow: ["com", "net"] },
-    })
+    }),
+    password: Joi.string().min(6),
 })
 
 const validateSignUp = (req , res  , next)=>{

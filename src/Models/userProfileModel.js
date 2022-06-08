@@ -5,7 +5,6 @@ const { model } = mongoose
 const ProfileModel = new Schema({
     userName: {
         type: String,
-        required: [true, 'User Name is required'],
     },
    isKid:{
        type:Boolean
@@ -13,6 +12,9 @@ const ProfileModel = new Schema({
     avatar:{
         type:String,
     },
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,ref:'User',
+    }
 })
 
 

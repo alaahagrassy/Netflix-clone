@@ -1,18 +1,49 @@
 const ProfileModel = require('../Models/userProfileModel')
-
+const UserModel = require('../Models/AuthModel')
 
 //addProfile
 profile = async(req,res)=>{
-    const {isKid} = req.body
-    const UserProfile = await ProfileModel.create({
-        userName,isKid
-    }).save().then(data=>{
-        res.status(200).json("Added")
-    }).catch(err=>{
-        res.status(500).json('Server Error')
-    })
-
+    UserModel.findById(req.body.userId)
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({
+                    message: "User Not Found"
+                })
+            }
+            const order = new ProfileModel({
+                isKid: req.body.isKid,
+                userId:req.body.userId
+            });
+            order.save()
+                .then(
+                    re => {
+                        res.status(201).json(re);
+                    })
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'Error',
+                error: err
+            })
+        })
 }
+
+
+getUsers = async (req , res )=>{
+
+    const profile = await ProfileModel.find()
+    .populate('userId' , ['userName' , 'avatar'])
+    .exec()
+    .then(data=>{
+        res.status(200).json(data)
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        })
+    })
+}
+
 //Edit 
 EditProfile = async(req,res)=>{
     const {id} = req.params
@@ -38,4 +69,4 @@ deleteProfile = async(req,res)=>{
     }) 
 }
 
-module.exports = {profile , EditProfile , deleteProfile}
+module.exports = {profile , EditProfile , deleteProfile,getUsers }

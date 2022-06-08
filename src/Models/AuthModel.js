@@ -10,8 +10,13 @@ const { Schema } = mongoose;
 const { model } = mongoose;
 const UserModel = new Schema({
   userName: {
-    type: String,
-    required: [true, "User name is required"],
+    type: String
+  },
+  FirstName:{
+    type:String
+  },
+  LastName:{
+    type:String
   },
   email: {
     type: String,
@@ -39,13 +44,20 @@ const UserModel = new Schema({
   isAdmin: {
     type: Boolean,
     default: false,
-  },
-  avatar: {
+},
+avatar: {
     type: String,
-  },
-  profile: {
-    type: Array,
-  },
+},
+isActive:{
+  type:[Number]
+},
+plane:{
+  type:String,
+  enum : ['Basic' ,'Standard'  , 'Premmium']
+},
+device:{
+  type:String
+}
 });
 
 ////hashing password
@@ -74,7 +86,8 @@ UserModel.methods.generatToken = function () {
       cardNumber: JSON.stringify(this.cardNumber),
       expirationDate: JSON.stringify(this.expirationDate),
       securityCode: JSON.stringify(this.securityCode),
-      role: JSON.stringify(this.role),
+      isAdmin: JSON.stringify(this.isAdmin),
+      isActive : JSON.stringify(this.isActive)
     },
     process.env.jwt_secret
   );
@@ -88,10 +101,11 @@ UserModel.statics.getCurrentUser = async function (token) {
     });
     currentUser._id = JSON.parse(decoded._id);
     currentUser.isAdmin = JSON.parse(decoded.isAdmin);
+    currentUser.isActive = JSON.parse(decoded.isActive)
     if (!currentUser) throw new Error("user not found");
     return currentUser;
   } catch (err) {
-    console.log(err);
+     throw new Error("You are not Authorized ")
   }
 };
 

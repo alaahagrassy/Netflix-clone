@@ -53,22 +53,31 @@ isActive:{
 },
 plane:{
   type:String,
-  enum : ['Basic' ,'Standard'  , 'Premmium']
+  // enum : ['Basic' ,'Standard'  , 'Premmium']
 },
 device:{
-  type:String
+  type:String,
+  enum:['Phone' , 'TV' , 'Laptop']
+  
 }
 });
 
 ////hashing password
-UserModel.pre("save", function (next) {
-  var user = this;
-  bcrypt.genSalt(salt_round, function (err, salt) {
-    bcrypt.hash(user.password, salt, function (err, hash) {
-      user.password = hash;
-      next();
-    });
-  });
+// UserModel.pre("save", function (next) {
+//   var user = this;
+//   bcrypt.genSalt(salt_round, function (err, salt) {
+//     bcrypt.hash(user.password, salt, function (err, hash) {
+//       if(this.isModified("password"))
+//       user.password = hash;
+//       next();
+//     });
+//   });
+// });
+UserModel.pre("save", async function () {
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password,salt_round );
+    if (!this.password) throw new Error("password error");
+  }
 });
 
 ////comapre password

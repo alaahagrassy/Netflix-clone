@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator')
 //register function
 
 register = async (req, res, next) => {
-    const { email, password,isAdmin } = req.body
+    const { email, password,isAdmin} = req.body
     const user = await UserModel.findOne({ email })
     // check if email Exist 
     if (user) {
@@ -98,4 +98,60 @@ edit = async (req, res) => {
         })
     })
  }
-module.exports = { register, logIn, edit ,getUsers,getById }
+
+ //Delete User
+ Remove = async (req ,res)=>{
+     const {id} = req.params
+     const user = await UserModel.findByIdAndDelete(id).then(data=>{
+         if(!data)
+         return res.status(404).json({
+             message:'Not Found'
+         })
+         return res.status(200).json({
+             message:'Deleted'
+         })
+     }).catch(err=>{
+         res.status(500).json({
+             message : err
+         })
+     })
+ }
+
+
+ // Choose plane
+
+ plane  = async(req,res)=>{
+     const {id} = req.params
+     const {plane} = req.body
+     const UserPlane = await UserModel.findByIdAndUpdate(id , {
+        plane
+     }).then(data=>{
+       if(!data)
+       return res.status(404).json("Not Found")
+
+       return res.status(200).json('Updated')
+     }).catch(err=>{
+         res.status(500).json('Server Error')
+     })
+
+ }
+ // payment
+
+ payment = async(req,res)=>{
+    const {id} = req.params
+    const {userName , cardNumber,expirationDate,securityCode} = req.body
+    const UserPayment = await UserModel.findByIdAndUpdate(id , {
+       userName ,cardNumber , expirationDate ,securityCode
+    }).then(data=>{
+      if(!data)
+      return res.status(404).json("Not Found")
+
+      return res.status(200).json('Updated')
+    }).catch(err=>{
+        res.status(500).json('Server Error')
+    })
+
+}
+
+
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plane }

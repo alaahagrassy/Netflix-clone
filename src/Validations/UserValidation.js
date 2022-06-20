@@ -1,5 +1,6 @@
 const Joi = require('@hapi/joi')
 // Joi.objectId = require('joi-objectid')(Joi)
+const pattern = "^01[0-2]\d{1,8}$"
 
 const signup = Joi.object({
     userName: Joi.string(),
@@ -23,7 +24,12 @@ const UpdateUser = Joi.object({
 })
 
 const Userpayment = Joi.object({
-    userName: Joi.string(),
+
+    
+    
+    FirstName: Joi.string().required(),
+    LastName:Joi.string().required(),
+    PhoneNumber : Joi.number().regex(pattern).require(),
     cardNumber: Joi.number().required(),
     expirationDate: Joi.date().required(),
     securityCode: Joi.number().min(3).max(4).required(),

@@ -135,13 +135,14 @@ edit = async (req, res) => {
      })
 
  }
- // payment
 
+
+ // payment
  payment = async(req,res)=>{
     const {id} = req.params
-    const {userName , cardNumber,expirationDate,securityCode} = req.body
+    const {FirstName,LastName , cardNumber,expirationDate,securityCode } = req.body
     const UserPayment = await UserModel.findByIdAndUpdate(id , {
-       userName ,cardNumber , expirationDate ,securityCode
+       FirstName ,LastName ,cardNumber , expirationDate ,securityCode
     }).then(data=>{
       if(!data)
       return res.status(404).json("Not Found")

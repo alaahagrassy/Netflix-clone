@@ -18,6 +18,9 @@ const UserModel = new Schema({
   LastName:{
     type:String
   },
+  PhoneNumber:{
+    type: Number
+  },
   email: {
     type: String,
     required: [true, "Email is required"],
@@ -27,19 +30,16 @@ const UserModel = new Schema({
   },
   password: {
     type: String,
-    required: [true, "password required"],
   },
   cardNumber: {
     type: Number,
-    // required: [true, 'Card Number required'],
   },
   expirationDate: {
     type: Date,
-    // required:[true , 'expiration Date required']
   },
   securityCode: {
     type: Number,
-    // required:[true , 'security Code required']
+
   },
   isAdmin: {
     type: Boolean,
@@ -53,7 +53,7 @@ isActive:{
 },
 plane:{
   type:String,
-  // enum : ['Basic' ,'Standard'  , 'Premmium']
+  enum : ['Basic' ,'Standard'  , 'Premmium']
 },
 device:{
   type:String,

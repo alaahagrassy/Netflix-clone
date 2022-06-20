@@ -12,7 +12,7 @@ router.put('/:id' ,authorizeUser,valdateUpdateUser, edit)
 router.get('/', getUsers)
 router.get('/:id' ,getById)
 router.delete('/:id' ,Remove)
-router.post('/payment/:id' , authorizeUser,payment)
+router.post('/payment/:id' , authorizeUser,paymentValidation,payment)
 router.post('/Plane/:id' ,authorizeUser,plane)
 
 module.exports = router

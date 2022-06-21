@@ -3,11 +3,13 @@ const movieModel =require('../Models/MovieModel')
 
 //create 
 const createMovie = async (req , res)=>{
-    const movie = req.body
-    const newMovie =  new movieModel(movie)
+    const {title,desc,img ,trailer,video,year,limit,genre,isSeries} = req.body
+    const newMovie =  new movieModel({
+        title, desc, img, trailer, video , year,limit,  genre  , isSeries
+    })
     try{
-        const saved = await newMovie.save()
-        res.status(200).json(saved)
+        const Movie = await newMovie.save()
+        res.status(200).json(Movie)
     }catch(err){
         res.status(500).json(err);
     }

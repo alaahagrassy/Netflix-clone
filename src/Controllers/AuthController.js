@@ -38,13 +38,21 @@ logIn = async (req, res) => {
         if (!copmarePassword) {
             return res.json('Invalid email or password')
         }
-        // await FindUser.updateOne({
-        //     $push:{isActive : 1}
-        // }).exec()
+        
+        if(FindUser.plan==='Basic'&& FindUser.isActive.length===1)
+        return res.json("You can't login")
+        else if(FindUser.plan==='Standard'&& FindUser.isActive.length===2)
+        return res.json("you can't logIn")
+        else if(FindUser.plan==='Premmium'&& FindUser.isActive.length===4)
+        return res.json("you can't logIn")
+        
         const token = await FindUser.generatToken();
         if(!token)
         res.status(404).json('Failed')
         res.json({ token })
+        await FindUser.updateOne({
+            $push:{isActive : 1}
+        }).exec()
     }
     else {
         return res.status(400).json("Not Found")

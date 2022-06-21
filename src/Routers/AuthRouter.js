@@ -7,7 +7,7 @@ const {checkForLoggedIn} = require('../middlewares/CheckForLogged')
 
 
 router.post('/register' , checkForLoggedIn,validateSignUp, register)
-router.post('/login' ,checkForLoggedIn,  logIn)
+router.post('/login' ,checkForLoggedIn ,logIn)
 router.put('/edit' ,authorizeUser,valdateUpdateUser, edit)
 router.get('/', getUsers)
 router.get('/:id' ,getById)

@@ -94,6 +94,7 @@ UserModel.methods.generatToken = function () {
       securityCode: JSON.stringify(this.securityCode),
       isAdmin: JSON.stringify(this.isAdmin),
       isActive : JSON.stringify(this.isActive)
+      
     },
     process.env.jwt_secret
   );
@@ -108,9 +109,11 @@ UserModel.statics.getCurrentUser = async function (token) {
     currentUser._id = JSON.parse(decoded._id);
     currentUser.isAdmin = JSON.parse(decoded.isAdmin);
     currentUser.isActive = JSON.parse(decoded.isActive)
+
     if (!currentUser) throw new Error("user not found");
     return currentUser;
   } catch (err) {
+    console.log(err);
      throw new Error("You are not Authorized ")
   }
 };

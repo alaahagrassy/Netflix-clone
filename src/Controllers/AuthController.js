@@ -8,7 +8,7 @@ register = async (req, res, next) => {
     const user = await UserModel.findOne({ email })
     // check if email Exist 
     if (user) {
-        return res.json({ message: 'User exist' })
+        return res.status(404).json({ message: 'User exist' })
     }
     const AddUser = new UserModel({
         email, password,isAdmin
@@ -42,6 +42,8 @@ logIn = async (req, res) => {
         //     $push:{isActive : 1}
         // }).exec()
         const token = await FindUser.generatToken();
+        if(!token)
+        res.status(404).json('Failed')
         res.json({ token })
     }
     else {
@@ -52,10 +54,10 @@ logIn = async (req, res) => {
 //Update Profile function 
 
 edit = async (req, res) => {
-    const { id } = req.params
+    const id = req.userId
     const {userName, email  ,password} = req.body
     try {
-        const user = await UserModel.findOneAndUpdate(email, {
+        const user = await UserModel.findOneAndUpdate(id, {
             userName, email , password
         })
         res.status(200).json('Updated Successfully')
@@ -86,7 +88,7 @@ edit = async (req, res) => {
  //get userById function
 
  getById = async (req ,res)=>{
-    const {id} = req.params
+    const id = req.userId
     const user = await UserModel.findById(id)
     .populate('UserProfile' , ['isKid' , 'userName'])
     .then(data=>{
@@ -120,17 +122,17 @@ edit = async (req, res) => {
 
  // Choose plane
 
- plane  = async(req,res)=>{
-     const {id} = req.params
-     const {plane} = req.body
-     const UserPlane = await UserModel.findByIdAndUpdate(id , {
-        plane
+ plan  = async(req,res)=>{
+     const id = req.userId
+     const {plan} = req.body   
+ const UserPlane = await UserModel.findByIdAndUpdate(id , {
+        plan
      }).then(data=>{
-       if(!data)
+       if(!data)       
        return res.status(404).json("Not Found")
-
        return res.status(200).json('Updated')
-     }).catch(err=>{
+        }).catch(err=>{
+         console.log(err.message)
          res.status(500).json('Server Error')
      })
 
@@ -139,10 +141,10 @@ edit = async (req, res) => {
 
  // payment
  payment = async(req,res)=>{
-    const {id} = req.params
-    const {FirstName,LastName , cardNumber,expirationDate,securityCode } = req.body
+    const id = req.userId
+    const {FirstName,LastName , cardNumber,expirationDate,securityCode,PhoneNumber } = req.body
     const UserPayment = await UserModel.findByIdAndUpdate(id , {
-       FirstName ,LastName ,cardNumber , expirationDate ,securityCode
+       FirstName ,LastName ,cardNumber , expirationDate ,securityCode, PhoneNumber
     }).then(data=>{
       if(!data)
       return res.status(404).json("Not Found")
@@ -151,8 +153,16 @@ edit = async (req, res) => {
     }).catch(err=>{
         res.status(500).json('Server Error')
     })
-
 }
 
+destroy = async (req, res, next) =>{
+    UserModel.deleteMany().then(data=>{
+        return res.status(200).json('Deleted All')
+    }
+        ).catch(err=>{
+            res.status(500).json('Server Error')
+        })
+        
+}
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plane }
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy }

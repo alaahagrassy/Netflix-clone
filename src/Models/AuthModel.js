@@ -34,9 +34,6 @@ const UserModel = new Schema({
   cardNumber: {
     type: Number,
   },
-  expirationDate: {
-    type: Date,
-  },
   securityCode: {
     type: Number,
 
@@ -51,7 +48,7 @@ avatar: {
 isActive:{
   type:[Number]
 },
-plane:{
+plan:{
   type:String,
   enum : ['Basic' ,'Standard'  , 'Premmium']
 },

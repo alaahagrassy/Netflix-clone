@@ -53,8 +53,7 @@ plan:{
   enum : ['Basic' ,'Standard'  , 'Premmium']
 },
 device:{
-  type:String,
-  enum:['Phone' , 'TV' , 'Laptop']
+  type:[String]
   
 }
 });

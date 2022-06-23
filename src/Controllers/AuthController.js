@@ -38,7 +38,7 @@ logIn = async (req, res) => {
         if (!copmarePassword) {
             return res.json('Invalid email or password')
         }
-        
+
         if(FindUser.plan==='Basic'&& FindUser.isActive.length===1)
         return res.json("You can't login")
         else if(FindUser.plan==='Standard'&& FindUser.isActive.length===2)
@@ -146,6 +146,36 @@ edit = async (req, res) => {
 
  }
 
+ //add Devices to open
+
+ devices = async (req , res)=>{
+    const id = req.userId
+    const {device} = req.body   
+const UserDevice = await UserModel.findByIdAndUpdate(id , {
+    $push:{device : device}
+    }).then(data=>{
+      if(!data)       
+      return res.status(404).json("Not Found")
+      return res.status(200).json('Added Device/s')
+       }).catch(err=>{
+        res.status(500).json('Server Error')
+    })
+ } 
+ removeDevice = async (req , res)=>{
+    const id = req.userId
+    const {device} = req.body   
+const UserDevice = await UserModel.findByIdAndUpdate(id , {
+    $pull:{device : device}
+    }).then(data=>{
+      if(!data)       
+      return res.status(404).json("Not Found")
+      return res.status(200).json('Deleted Device/s')
+       }).catch(err=>{
+        res.status(500).json('Server Error')
+    })
+ } 
+ 
+
 
  // payment
  payment = async(req,res)=>{
@@ -173,4 +203,19 @@ destroy = async (req, res, next) =>{
         
 }
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy }
+//log out
+
+logOut = async (req , res )=>{
+    const id = req.userId 
+const UserActive = await UserModel.findByIdAndUpdate(id , {
+    $pull:{isActive : 1}
+    }).then(data=>{
+      if(!data)       
+      return res.status(404).json("Not Found")
+      return res.status(200).json('logged')
+       }).catch(err=>{
+        res.status(500).json('Server Error')
+    })
+}
+
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut}

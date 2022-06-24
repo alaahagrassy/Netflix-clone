@@ -1,9 +1,9 @@
 const UserModel = require('../Models/AuthModel')
 const { validationResult } = require('express-validator')
 
-//register function
 
-register = async (req, res, next) => {
+//register function
+const register = async (req, res, next) => {
     const { email, password,isAdmin} = req.body
     const user = await UserModel.findOne({ email })
     // check if email Exist 
@@ -30,7 +30,7 @@ register = async (req, res, next) => {
 
 ///login function
 
-logIn = async (req, res) => {
+ const logIn = async (req, res) => {
     const { email, password } = req.body
     const FindUser = await UserModel.findOne({ email })
     if (FindUser) {
@@ -61,7 +61,7 @@ logIn = async (req, res) => {
 
 //Update Profile function 
 
-edit = async (req, res) => {
+const edit = async (req, res) => {
     const id = req.userId
     const {userName, email  ,password} = req.body
     try {
@@ -79,7 +79,7 @@ edit = async (req, res) => {
 
  /// get All User function
 
- getUsers = async (req , res )=>{
+ const getUsers = async (req , res )=>{
 
         const users = await UserModel.find()
         .populate('profile')
@@ -95,7 +95,7 @@ edit = async (req, res) => {
  }
  //get userById function
 
- getById = async (req ,res)=>{
+ const getById = async (req ,res)=>{
     const id = req.userId
     const user = await UserModel.findById(id)
     .populate('UserProfile' , ['isKid' , 'userName'])
@@ -110,7 +110,7 @@ edit = async (req, res) => {
  }
 
  //Delete User
- Remove = async (req ,res)=>{
+ const Remove = async (req ,res)=>{
      const {id} = req.params
      const user = await UserModel.findByIdAndDelete(id).then(data=>{
          if(!data)
@@ -130,7 +130,7 @@ edit = async (req, res) => {
 
  // Choose plane
 
- plan  = async(req,res)=>{
+ const plan  = async(req,res)=>{
      const id = req.userId
      const {plan} = req.body   
  const UserPlane = await UserModel.findByIdAndUpdate(id , {
@@ -148,7 +148,7 @@ edit = async (req, res) => {
 
  //add Devices to open
 
- devices = async (req , res)=>{
+ const devices = async (req , res)=>{
     const id = req.userId
     const {device} = req.body   
 const UserDevice = await UserModel.findByIdAndUpdate(id , {
@@ -161,7 +161,7 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
         res.status(500).json('Server Error')
     })
  } 
- removeDevice = async (req , res)=>{
+ const removeDevice = async (req , res)=>{
     const id = req.userId
     const {device} = req.body   
 const UserDevice = await UserModel.findByIdAndUpdate(id , {
@@ -178,7 +178,7 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
 
 
  // payment
- payment = async(req,res)=>{
+ const payment = async(req,res)=>{
     const id = req.userId
     const {FirstName,LastName , cardNumber,expirationDate,securityCode,PhoneNumber } = req.body
     const UserPayment = await UserModel.findByIdAndUpdate(id , {
@@ -193,7 +193,7 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
     })
 }
 
-destroy = async (req, res, next) =>{
+const destroy = async (req, res, next) =>{
     UserModel.deleteMany().then(data=>{
         return res.status(200).json('Deleted All')
     }

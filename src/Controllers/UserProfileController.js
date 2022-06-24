@@ -2,7 +2,7 @@ const ProfileModel = require('../Models/userProfileModel')
 const UserModel = require('../Models/AuthModel')
 
 //addProfile
-profile = async(req,res)=>{
+const profile = async(req,res)=>{
     UserModel.findById(req.body.userId)
         .then(user => {
             if (!user) {
@@ -29,7 +29,7 @@ profile = async(req,res)=>{
 }
 
 
-getUsers = async (req , res )=>{
+const getUsers = async (req , res )=>{
 
     const profile = await ProfileModel.find()
     .populate('userId' , ['userName' , 'avatar'])
@@ -45,7 +45,7 @@ getUsers = async (req , res )=>{
 }
 
 //Edit 
-EditProfile = async(req,res)=>{
+const EditProfile = async(req,res)=>{
     const {id} = req.params
     const {userName , isKid} = req.body
     const user = await ProfileModel.findByIdAndUpdate(id ,{
@@ -59,7 +59,7 @@ EditProfile = async(req,res)=>{
 
 //deleteProfile 
 
-deleteProfile = async(req,res)=>{
+const deleteProfile = async(req,res)=>{
     const {id} = req.params
     const delUserProfile = await ProfileModel.findByIdAndDelete(id)
     .then(data=>{

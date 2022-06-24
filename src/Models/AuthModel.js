@@ -111,7 +111,7 @@ UserModel.statics.getCurrentUser = async function (token) {
     if (!currentUser) throw new Error("user not found");
     return currentUser;
   } catch (err) {
-     throw new Error("You are not Authorized ")
+     throw new Error("You are not Authorized")
   }
 };
 

@@ -13,8 +13,8 @@ const ListSchema = new mongoose.Schema(
         genre:{
             type:String,
         },
-        content:{
-            type:Array
+        MovieId:{
+            type: mongoose.Schema.Types.Array,ref:'movie',
         },
     }
 )

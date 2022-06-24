@@ -39,7 +39,25 @@ const getList = async (req, res) => {
     res.status(500).json(err);
   }
 };
+//update
+const updateList = async (req , res)=>{
+  const _id = req.params.id;
 
+  const {movieId} = req.body;
+  try{
+      const movie =await ListModel.findById(_id)
+      console.log(movie);
+      await movie.updateOne({
+        $push:{content:movieId}
+      })
+      // const newM = await ListModel.findByIdAndUpdate(_id ,{
+      //     $set:update
+      // } )
+      res.status(200).json(movie)
+  }catch(err){
+      res.status(500).json(err)
+  }
+}
 //delete
 const deleteList = async (req, res) => {
   const _id = req.params.id;
@@ -51,4 +69,4 @@ const deleteList = async (req, res) => {
   }
 };
 
-module.exports = { createList, deleteList, getList };
+module.exports = { createList, deleteList, getList ,updateList};

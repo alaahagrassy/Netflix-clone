@@ -78,14 +78,15 @@ const deleteMovie = async (req , res)=>{
 const updateMovie = async (req , res)=>{
     const _id = req.params.id;
 
-    const update = req.body;
+    const {title,desc,img ,trailer,video,year,limit,genre,isSeries} = req.body;
     try{
         const movie = await movieModel.findByIdAndUpdate(_id ,{
-            $set:update
+           title , desc ,img , trailer , video , year , limit , $push:{genre : genre} , isSeries
         } )
         res.status(200).json(movie)
-    }catch{
+    }catch(err){
         res.status(500).json(err)
     }
 }
+
 module.exports = {createMovie , getMovie,getAllMovie , deleteMovie , updateMovie , getRandomMovie} 

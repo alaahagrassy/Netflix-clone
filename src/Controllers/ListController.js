@@ -2,42 +2,61 @@ const ListModel = require("../Models/ListModel");
 
 //create
 const createList = async (req, res) => {
-  const List = req.body;
-  console.log(List);
-  const newList = new ListModel(List);
+  const {title , type , genre,MovieId} = req.body;
+  const newList = new ListModel({
+    title , type , genre , MovieId
+  });
   try {
     const saved = await newList.save();
     res.status(200).json(saved);
   } catch (err) {
+    console.log(err)
     res.status(500).json(err);
   }
 };
 
 //get
 const getList = async (req, res) => {
-  const type = req.query.type;
-  const genre = req.query.genre;
-  let List = [];
-  try {
-    if (type) {
-      if (genre) {
-        List = await ListModel.aggregate([
-          { $match: { type: type, genre: genre } },
-          { $sample: { size: 10 } },
-        ]);
-      } else {
-        List = await ListModel.aggregate([
-          { $match: { genre: genre } },
-          { $sample: { size: 10 } },
-        ]);
-      }
-    } else {
-      List = await ListModel.aggregate([{ $sample: { size: 10 } }]);
-    }
-    res.status(200).json(List);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  // const type = req.query.type;
+  // const genre = req.query.genre;
+  // let List = [];
+  // try {
+  //   if (type) {
+  //     if (genre) {
+  //       List = await ListModel.aggregate([
+  //         { $match: { type: type, genre: genre } },
+  //         { $sample: { size: 10 } },
+  //       ]).populate('MovieId','title');
+  //     } else {
+  //       List = await ListModel.aggregate([
+  //         { $match: { genre: genre } },
+  //         { $sample: { size: 10 } },
+  //       ]).populate('MovieId' , 'title');
+  //     }
+  //   } else {
+  //     List = await ListModel.aggregate([{ $sample: { size: 10 } }]);
+  //   }
+  //   res.status(200).json(List).populate('MovieId' , 'title');
+  // } catch (err) {
+  //   console.log(err)
+  //   res.status(500).json(err);
+  // }
+
+  
+  ListModel.find().limit(10)
+        .populate('MovieId' ,'title')
+        .exec()
+        .then(list => {
+          if(!list)
+          return res.status(404).json('Error')
+
+            res.status(200).json(list)
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
 };
 //update
 const updateList = async (req , res)=>{

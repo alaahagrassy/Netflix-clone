@@ -3,7 +3,9 @@ const UserModel = require('../Models/AuthModel')
 
 //addProfile
 const profile = async(req,res)=>{
-    UserModel.findById(req.body.userId)
+    const userid = req.userId
+    const {userName , avatar} = req.body
+    UserModel.findById(userid)
         .then(user => {
             if (!user) {
                 return res.status(404).json({
@@ -11,8 +13,9 @@ const profile = async(req,res)=>{
                 })
             }
             const order = new ProfileModel({
-                isKid: req.body.isKid,
-                userId:req.body.userId
+                userid,
+                userName,
+                avatar
             });
             order.save()
                 .then(
@@ -32,7 +35,6 @@ const profile = async(req,res)=>{
 const getUsers = async (req , res )=>{
 
     const profile = await ProfileModel.find()
-    .populate('userId' , ['userName' , 'avatar'])
     .exec()
     .then(data=>{
         res.status(200).json(data)

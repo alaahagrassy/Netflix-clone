@@ -7,13 +7,14 @@ const ProfileModel = new Schema({
         type: String,
     },
    isKid:{
-       type:Boolean
+       type:Boolean,
+       default :false
    },
     avatar:{
         type:String,
     },
-    userId:{
-        type: mongoose.Schema.Types.ObjectId,ref:'User',
+    userName:{
+        type:String
     }
 })
 

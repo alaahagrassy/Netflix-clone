@@ -64,11 +64,11 @@ const register = async (req, res, next) => {
 //Update Profile function 
 
 const edit = async (req, res) => {
-    const id = req.userId
-    const {userName, email  ,password} = req.body
+    const {id }= req.params
+    const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
     try {
         const user = await UserModel.findOneAndUpdate(id, {
-            userName, email , password
+            userName, email , PhoneNumber , cardNumber , securityCode , plan
         })
         res.status(200).json('Updated Successfully')
     }
@@ -83,8 +83,7 @@ const edit = async (req, res) => {
 
  const getUsers = async (req , res )=>{
 
-        const users = await UserModel.find()
-        .populate('profile')
+        const users = await UserModel.find()    
         .exec()
         .then(data=>{
             res.status(200).json(data)
@@ -98,9 +97,8 @@ const edit = async (req, res) => {
  //get userById function
 
  const getById = async (req ,res)=>{
-    const id = req.userId
+    const {id} = req.params
     const user = await UserModel.findById(id)
-    .populate('UserProfile')
     .then(data=>{
         res.status(200).json(data)
     })

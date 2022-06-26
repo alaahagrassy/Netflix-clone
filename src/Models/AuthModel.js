@@ -55,20 +55,12 @@ plan:{
 device:{
   type:[String]
   
+},
+UserProfile : {
+  type: mongoose.Schema.Types.ObjectId,ref:'UserProfile',
 }
 });
 
-////hashing password
-// UserModel.pre("save", function (next) {
-//   var user = this;
-//   bcrypt.genSalt(salt_round, function (err, salt) {
-//     bcrypt.hash(user.password, salt, function (err, hash) {
-//       if(this.isModified("password"))
-//       user.password = hash;
-//       next();
-//     });
-//   });
-// });
 UserModel.pre("save", async function () {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password,salt_round );

@@ -62,7 +62,6 @@ const register = async (req, res, next) => {
 }
 
 //Update Profile function 
-
 const edit = async (req, res) => {
     const id = req.userId
     const {userName, email  ,password} = req.body

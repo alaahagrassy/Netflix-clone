@@ -4,7 +4,7 @@ const UserModel = require('../Models/AuthModel')
 //addProfile
 const profile = async(req,res)=>{
     const userid = req.userId
-    const {userName , avatar} = req.body
+    const {userName , avatar } = req.body
     UserModel.findById(userid)
         .then(user => {
             if (!user) {
@@ -13,7 +13,7 @@ const profile = async(req,res)=>{
                 })
             }
             const order = new ProfileModel({
-                userid,
+               user: userid,
                 userName,
                 avatar
             });
@@ -35,6 +35,7 @@ const profile = async(req,res)=>{
 const getUsers = async (req , res )=>{
 
     const profile = await ProfileModel.find()
+    .populate('user' ,'userName')
     .exec()
     .then(data=>{
         res.status(200).json(data)
@@ -70,5 +71,13 @@ const deleteProfile = async(req,res)=>{
         res.status(500).json("Server Error")
     }) 
 }
+deleteAllprofiles = async(req,res)=>{
+    const delUserProfile = await ProfileModel.deleteMany()
+    .then(data=>{
+        res.status(200).json("deleted Successfully")
+    }).catch(err=>{
+        res.status(500).json("Server Error")
+    }) 
+}
 
-module.exports = {profile , EditProfile , deleteProfile,getUsers }
+module.exports = {profile , EditProfile , deleteProfile,getUsers,deleteAllprofiles }

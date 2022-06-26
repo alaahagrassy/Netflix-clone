@@ -1,10 +1,11 @@
 const ProfileModel = require('../Models/userProfileModel')
 const UserModel = require('../Models/AuthModel')
 
+
 //addProfile
 const profile = async(req,res)=>{
     const userid = req.userId
-    const {userName , avatar} = req.body
+    const {userName , avatar } = req.body
     UserModel.findById(userid)
         .then(user => {
             if (!user) {
@@ -13,7 +14,7 @@ const profile = async(req,res)=>{
                 })
             }
             const order = new ProfileModel({
-                userid,
+            user: userid,
                 userName,
                 avatar
             });
@@ -33,8 +34,8 @@ const profile = async(req,res)=>{
 
 
 const getUsers = async (req , res )=>{
-
     const profile = await ProfileModel.find()
+    .populate('user' ,'userName')
     .exec()
     .then(data=>{
         res.status(200).json(data)
@@ -43,6 +44,18 @@ const getUsers = async (req , res )=>{
         res.status(500).json({
             error: err
         })
+    })
+}
+const getUser = async (req , res )=>{
+    const user = req.userId
+    const profile = await ProfileModel.find({user}).populate('user' , ['userName' , 'email'] )
+    .then(data=>{
+        if(!data.length)
+        return res.status(404).json('Not Found')
+
+        res.status(200).json(data)
+    }).catch(err=>{
+        res.status(500).json(err)
     })
 }
 
@@ -70,5 +83,13 @@ const deleteProfile = async(req,res)=>{
         res.status(500).json("Server Error")
     }) 
 }
+deleteAllprofiles = async(req,res)=>{
+    const delUserProfile = await ProfileModel.deleteMany()
+    .then(data=>{
+        res.status(200).json("deleted Successfully")
+    }).catch(err=>{
+        res.status(500).json("Server Error")
+    }) 
+}
 
-module.exports = {profile , EditProfile , deleteProfile,getUsers }
+module.exports = {profile , EditProfile , deleteProfile,getUsers,getUser,deleteAllprofiles}

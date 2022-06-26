@@ -15,6 +15,9 @@ const ProfileModel = new Schema({
     },
     userName:{
         type:String
+    },
+    user:{
+        type: mongoose.Schema.Types.ObjectId,ref:'User',
     }
 })
 

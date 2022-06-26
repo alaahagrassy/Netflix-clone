@@ -56,9 +56,6 @@ device:{
   type:[String]
   
 },
-UserProfile : {
-  type: mongoose.Schema.Types.ObjectId,ref:'UserProfile',
-}
 });
 
 UserModel.pre("save", async function () {

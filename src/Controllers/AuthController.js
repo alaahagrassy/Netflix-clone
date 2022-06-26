@@ -62,7 +62,6 @@ const register = async (req, res, next) => {
 }
 
 //Update Profile function 
-
 const edit = async (req, res) => {
     const {id }= req.params
     const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
@@ -83,7 +82,8 @@ const edit = async (req, res) => {
 
  const getUsers = async (req , res )=>{
 
-        const users = await UserModel.find()    
+        const users = await UserModel.find()
+        .populate
         .exec()
         .then(data=>{
             res.status(200).json(data)

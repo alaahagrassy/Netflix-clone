@@ -49,7 +49,7 @@ const register = async (req, res, next) => {
         const token = await FindUser.generatToken();
         if(!token)
         res.status(404).json('Failed')
-        res.json({ token })
+        res.json({user:FindUser , token})
         await FindUser.updateOne({
             $push:{isActive : 1}
         }).exec()

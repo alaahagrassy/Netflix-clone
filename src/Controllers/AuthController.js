@@ -65,7 +65,22 @@ const register = async (req, res, next) => {
 //Update Profile function 
 const edit = async (req, res) => {
 
-    const {id }= req.params
+    const id= req.userId
+    const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
+    try {
+        const user = await UserModel.findOneAndUpdate(id, {
+            userName, email , PhoneNumber , cardNumber , securityCode , plan
+        })
+        res.status(200).json(user)
+    }
+    catch (err) {
+        console.log(err);
+        res.json(err)
+    }
+}
+const editForAdmin = async (req, res) => {
+
+    const {id}= req.params
     const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
     try {
         console.log(id,password);
@@ -98,6 +113,20 @@ const edit = async (req, res) => {
 
  const getById = async (req ,res)=>{
     const id = req.userId
+    const user = await UserModel.findById(id)
+    .populate(['Fav' , 'watched'])
+    .then(data=>{
+        res.status(200).json(data)
+    })
+    .catch(err=>{
+        console.log(err)
+        res.status(500).json(err)
+    })
+ }
+
+ //get userById function For Admin
+ const getuser = async (req ,res)=>{
+    const {id} = req.params
     const user = await UserModel.findById(id)
     .populate(['Fav' , 'watched'])
     .then(data=>{
@@ -263,12 +292,12 @@ const watchedMovies = async (req ,res)=>{
 
 const DeletFav = async (req ,res)=>{
     const id = req.userId
-    const {Fav ,watched} = req.body
+    const {Fav} = req.body
     if(!Fav){
         return res.status(404).json("Not Found")
     }
     const favMovie = await UserModel.findByIdAndUpdate(id,{
-        $pull:{Fav:Fav} , $pull:{watched:watched}
+        $pull:{Fav:Fav}
     }) 
     .then(data=>{
         if(!data)
@@ -286,4 +315,4 @@ const DeletFav = async (req ,res)=>{
 
 
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,FavMovies,DeletFav}
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,payment,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav}

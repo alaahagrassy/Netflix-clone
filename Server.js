@@ -8,6 +8,7 @@ const ProfileRouter = require('./src/Routers/UserProfileRouter')
 const AdminRouter = require('./src/Routers/AdminRouter')
 const MovieRouter = require('./src/Routers/MovieRouter')
 const ListRouter = require('./src/Routers/ListRouter')
+errhandling = require('./ErrorHandling')
 app.use(express.json());
 app.use(cors());
 
@@ -27,6 +28,11 @@ app.use('/movie' ,MovieRouter)
 // List Router
 app.use('/list' ,ListRouter)
 
+
+app.use((err, req, res, next) => {
+  const response = errhandling(err);
+  res.status(response.status).json({ err: response.message });
+});
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`)

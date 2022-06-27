@@ -56,6 +56,12 @@ device:{
   type:[String]
   
 },
+Fav : {
+  type: mongoose.Schema.Types.Array,ref:'movie',
+},
+watched : {
+  type: mongoose.Schema.Types.Array,ref:'movie',
+}
 });
 
 UserModel.pre("save", async function () {
@@ -66,7 +72,7 @@ UserModel.pre("save", async function () {
 });
 
 UserModel.pre("findOneAndUpdate" , async function(){
-  
+
 })
 
 

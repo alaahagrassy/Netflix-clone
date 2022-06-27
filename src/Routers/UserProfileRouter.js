@@ -5,7 +5,7 @@ const {authorizeUser ,}  =require('../middlewares/AuthorizeUser')
 const {AuthorizeProfile} =require('../middlewares/AuthorizeProfile')
 
 router.post('/' ,authorizeUser,profile)
-router.put('/' ,EditProfile)
+router.put('/:id' ,EditProfile)
 router.delete('/:id' ,deleteProfile)
 router.get('/' ,getUsers)
 router.get('/one' ,authorizeUser,getUser)

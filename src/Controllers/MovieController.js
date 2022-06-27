@@ -104,7 +104,7 @@ const search = async (req , res)=>{
     }, function (err ,data){
         res.json(data)
     }
-    ).limit(2)
+    ).limit(10)
 }
 
 module.exports = {createMovie , getMovie,getAllMovie , deleteMovie , updateMovie , getRandomMovie,search} 

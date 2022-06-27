@@ -52,7 +52,7 @@ const register = async (req, res, next) => {
         const token = await FindUser.generatToken();
         if(!token)
         res.status(404).json('Failed')
-        res.json({ token })
+        res.json({user:FindUser , token})
         await FindUser.updateOne({
             $push:{isActive : 1}
         }).exec()
@@ -64,13 +64,13 @@ const register = async (req, res, next) => {
 
 //Update Profile function 
 const edit = async (req, res) => {
-    const id = req.userId
-    
-    const {userName, email  ,password} = req.body
+
+    const {id }= req.params
+    const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
     try {
         console.log(id,password);
         const user = await UserModel.findOneAndUpdate(id, {
-            userName, email , password
+            userName, email , PhoneNumber , cardNumber , securityCode , plan
         })
         res.status(200).json(user)
     }
@@ -100,9 +100,11 @@ const edit = async (req, res) => {
  //get userById function
 
  const getById = async (req ,res)=>{
-    const id = req.userId
+    const {id} = req.params
     const user = await UserModel.findById(id)
+
     .populate('Fav')
+
     .then(data=>{
         res.status(200).json(data)
     })

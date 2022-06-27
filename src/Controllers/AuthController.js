@@ -225,8 +225,7 @@ const FavMovies = async (req ,res)=>{
         return res.status(404).json("Not Found")
     }
     const favMovie = await UserModel.findByIdAndUpdate(id,{
-        $push:{Fav:Fav},
-        $push:{watched:watched}
+        $push:{Fav:Fav , watched : watched}
     }) 
     .then(data=>{
         if(!data)

@@ -100,11 +100,8 @@ const edit = async (req, res) => {
  //get userById function
 
  const getById = async (req ,res)=>{
-    const {id} = req.params
-    const user = await UserModel.findById(id)
-
-    .populate('Fav')
-
+    const id = req.userId
+    const user = await UserModel.findById(id).populate('Fav')
     .then(data=>{
         res.status(200).json(data)
     })
@@ -232,13 +229,13 @@ const UserActive = await UserModel.findByIdAndUpdate(id , {
 
 const FavMovies = async (req ,res)=>{
     const id = req.userId
-    const {Fav} = req.body
+    const {Fav ,watched} = req.body
 
     if(!Fav){
         return res.status(404).json("Not Found")
     }
     const favMovie = await UserModel.findByIdAndUpdate(id,{
-        $push:{Fav : Fav}
+        Fav ,watched
     })
     .then(data=>{
         if(!data)
@@ -250,6 +247,11 @@ const FavMovies = async (req ,res)=>{
         res.status(500).json(err)
     })
 }
+
+
+//myWatched Movie
+
+
 
 
 module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut,FavMovies}

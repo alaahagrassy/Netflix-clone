@@ -9,6 +9,7 @@ const signup = Joi.object({
         }).required(),
     password: Joi.string().required().min(6),
     isAdmin: Joi.boolean(),
+    avatar:Joi.string()
 })
 
 const UpdateUser = Joi.object({

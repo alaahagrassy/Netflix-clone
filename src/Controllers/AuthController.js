@@ -83,7 +83,7 @@ const edit = async (req, res) => {
  const getUsers = async (req , res )=>{
 
         const users = await UserModel.find()
-        .populate('profile')
+        .populate
         .exec()
         .then(data=>{
             res.status(200).json(data)

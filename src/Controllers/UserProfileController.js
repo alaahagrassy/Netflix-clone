@@ -1,6 +1,7 @@
 const ProfileModel = require('../Models/userProfileModel')
 const UserModel = require('../Models/AuthModel')
 
+
 //addProfile
 const profile = async(req,res)=>{
     const userid = req.userId
@@ -13,7 +14,7 @@ const profile = async(req,res)=>{
                 })
             }
             const order = new ProfileModel({
-               user: userid,
+            user: userid,
                 userName,
                 avatar
             });
@@ -33,7 +34,6 @@ const profile = async(req,res)=>{
 
 
 const getUsers = async (req , res )=>{
-
     const profile = await ProfileModel.find()
     .populate('user' ,'userName')
     .exec()
@@ -44,6 +44,18 @@ const getUsers = async (req , res )=>{
         res.status(500).json({
             error: err
         })
+    })
+}
+const getUser = async (req , res )=>{
+    const user = req.userId
+    const profile = await ProfileModel.find({user}).populate('user' , ['userName' , 'email'] )
+    .then(data=>{
+        if(!data.length)
+        return res.status(404).json('Not Found')
+
+        res.status(200).json(data)
+    }).catch(err=>{
+        res.status(500).json(err)
     })
 }
 
@@ -80,4 +92,4 @@ deleteAllprofiles = async(req,res)=>{
     }) 
 }
 
-module.exports = {profile , EditProfile , deleteProfile,getUsers,deleteAllprofiles }
+module.exports = {profile , EditProfile , deleteProfile,getUsers,getUser,deleteAllprofiles}

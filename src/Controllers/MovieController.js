@@ -88,5 +88,21 @@ const updateMovie = async (req , res)=>{
         res.status(500).json(err)
     }
 }
+//search 
 
-module.exports = {createMovie , getMovie,getAllMovie , deleteMovie , updateMovie , getRandomMovie} 
+const search = async (req , res)=>{
+    const q = req.body.q
+    movieModel.find({
+        title :{
+            $regex :new RegExp(q)
+        }
+    } , {
+        _id:0,
+        __v:0
+    }, function (err ,data){
+        res.json(data)
+    }
+    ).limit(2)
+}
+
+module.exports = {createMovie , getMovie,getAllMovie , deleteMovie , updateMovie , getRandomMovie,search} 

@@ -6,7 +6,7 @@ const {AuthorizeProfile} =require('../middlewares/AuthorizeProfile')
 
 router.post('/' ,authorizeUser,profile)
 router.put('/' ,EditProfile)
-router.delete('/' ,deleteProfile)
+router.delete('/:id' ,deleteProfile)
 router.get('/' ,getUsers)
 router.get('/one' ,authorizeUser,getUser)
 router.delete('/all' ,deleteAllprofiles)

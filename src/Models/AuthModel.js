@@ -65,6 +65,13 @@ UserModel.pre("save", async function () {
   }
 });
 
+UserModel.pre("findOneAndUpdate" , async function(){
+  
+})
+
+
+
+
 ////comapre password
 UserModel.methods.comparepassword = function (pass) {
   return bcrypt.compare(pass, this.password);
@@ -100,8 +107,7 @@ UserModel.statics.getCurrentUser = async function (token) {
 
     if (!currentUser) throw new Error("user not found");
     return currentUser;
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
      throw new Error("You are not Authorized ")
   }
 };

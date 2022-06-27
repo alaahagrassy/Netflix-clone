@@ -221,7 +221,6 @@ const UserActive = await UserModel.findByIdAndUpdate(id , {
 const FavMovies = async (req ,res)=>{
     const id = req.userId
     const {Fav ,watched} = req.body
-
     if(!Fav){
         return res.status(404).json("Not Found")
     }

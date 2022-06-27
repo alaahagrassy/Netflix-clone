@@ -2,8 +2,6 @@ const express = require('express')
 const router = express.Router() 
 const {profile , EditProfile , deleteProfile ,getUsers,getUser,deleteAllprofiles} = require('../Controllers/UserProfileController')
 const {authorizeUser ,}  =require('../middlewares/AuthorizeUser')
-const {AuthorizeProfile} =require('../middlewares/AuthorizeProfile')
-
 router.post('/' ,authorizeUser,profile)
 router.put('/:id' ,EditProfile)
 router.delete('/:id' ,deleteProfile)

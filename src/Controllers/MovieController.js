@@ -94,7 +94,7 @@ const search = async (req , res)=>{
     const q = req.body.q
     movieModel.find({
         title :{
-            $regex :new RegExp(q)
+            $regex : q , $options:'i'
         }
     } , {
         _id:0,

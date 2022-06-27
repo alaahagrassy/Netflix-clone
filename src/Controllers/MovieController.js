@@ -93,7 +93,7 @@ const updateMovie = async (req , res)=>{
 const search = async (req , res)=>{
     const q = req.body.q
     if (q === "" || q === " ")
-    return res.status(404).json([])
+    return res.status(200).json([])
     movieModel.find({
         title :{
             $regex : q , $options:'i'

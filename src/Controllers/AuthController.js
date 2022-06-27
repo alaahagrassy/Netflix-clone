@@ -24,7 +24,7 @@ const register = async (req, res, next) => {
     const token = await NewUser.generatToken();
     if(!token)
     return res.json('Error')
-    return res.status(200).json({token})
+    return res.status(200).json({user:NewUser,token})
     }catch(err){
         console.log(err);
         return res.status(500).json('Server Error ')

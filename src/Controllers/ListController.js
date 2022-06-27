@@ -14,9 +14,18 @@ const createList = async (req, res) => {
     res.status(500).json(err);
   }
 };
+const getList =async (req , res)=>{
+  const _id =req.params.id;
+  try{
+      const list =await ListModel.findById(_id)
+      res.status(200).json(list)
 
+  }catch(err){
+      res.status(500).json(err)
+  }
+}
 //get
-const getList = async (req, res) => {
+const getLists = async (req, res) => {
   // const type = req.query.type;
   // const genre = req.query.genre;
   // let List = [];
@@ -44,7 +53,7 @@ const getList = async (req, res) => {
 
   
   ListModel.find().limit(10)
-        .populate('MovieId' ,'title')
+        .populate('MovieId')
         .exec()
         .then(list => {
           if(!list)
@@ -62,12 +71,13 @@ const getList = async (req, res) => {
 const updateList = async (req , res)=>{
   const _id = req.params.id;
 
-  const {movieId} = req.body;
+  const {MovieId} = req.body;
+  console.log(req.body);
   try{
       const movie =await ListModel.findById(_id)
       console.log(movie);
       await movie.updateOne({
-        $push:{content:movieId}
+        MovieId
       })
       // const newM = await ListModel.findByIdAndUpdate(_id ,{
       //     $set:update
@@ -88,4 +98,4 @@ const deleteList = async (req, res) => {
   }
 };
 
-module.exports = { createList, deleteList, getList ,updateList};
+module.exports = { createList, deleteList, getList, getLists ,updateList};

@@ -3,7 +3,6 @@ const UserModel = require('../Models/AuthModel')
 const authorizeUser = async (req , res , next)=>{
    const token =  req.headers.authorization
     const user = await UserModel.getCurrentUser(token)
-    console.log(token);
     if(!user.id)
     return res.json('You are not authorized to complete this action')
     req.userId = user.id

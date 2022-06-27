@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router() 
-const {register , logIn , edit ,getUsers,getById,Remove ,payment,plan,destroy,devices,removeDevice,logOut,FavMovies} = require('../Controllers/AuthController')
+const {register , logIn , edit ,getUsers,getById,Remove ,payment,plan,destroy,devices,removeDevice,DeletFav,logOut,FavMovies} = require('../Controllers/AuthController')
 const {validateSignUp , valdateUpdateUser,paymentValidation } = require('../Validations/UserValidation')
 const {authorizeUser} = require('../middlewares/AuthorizeUser')
 const {checkForLoggedIn} = require('../middlewares/CheckForLogged')
@@ -20,5 +20,6 @@ router.put('/Deletedevice',authorizeUser,removeDevice)
 router.put('/logout',authorizeUser,logOut)
 
 router.put('/fav',authorizeUser,FavMovies)
+router.put('/delFav',authorizeUser,DeletFav)
 
 module.exports = router

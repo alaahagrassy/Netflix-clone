@@ -1,17 +1,20 @@
 const UserModel = require('../Models/AuthModel')
 const { validationResult } = require('express-validator')
 
-//register function
 
-register = async (req, res, next) => {
-    const { email, password,isAdmin} = req.body
+//register function
+const register = async (req, res, next) => {
+    const { email, password,isAdmin ,avatar} = req.body
+    const username = email.split('@')[0]
     const user = await UserModel.findOne({ email })
     // check if email Exist 
     if (user) {
         return res.status(404).json({ message: 'User exist' })
     }
     const AddUser = new UserModel({
-        email, password,isAdmin
+        email, password,isAdmin,
+        userName : username,
+        avatar
     })
     try{
     const NewUser = await AddUser.save();
@@ -30,7 +33,7 @@ register = async (req, res, next) => {
 
 ///login function
 
-logIn = async (req, res) => {
+ const logIn = async (req, res) => {
     const { email, password } = req.body
     const FindUser = await UserModel.findOne({ email })
     if (FindUser) {
@@ -38,13 +41,21 @@ logIn = async (req, res) => {
         if (!copmarePassword) {
             return res.json('Invalid email or password')
         }
-        // await FindUser.updateOne({
-        //     $push:{isActive : 1}
-        // }).exec()
+
+        if(FindUser.plan==='Basic'&& FindUser.isActive.length===1)
+        return res.json("You can't login")
+        else if(FindUser.plan==='Standard'&& FindUser.isActive.length===2)
+        return res.json("you can't logIn")
+        else if(FindUser.plan==='Premmium'&& FindUser.isActive.length===4)
+        return res.json("you can't logIn")
+        
         const token = await FindUser.generatToken();
         if(!token)
         res.status(404).json('Failed')
-        res.json({ token })
+        res.json({user:FindUser , token})
+        await FindUser.updateOne({
+            $push:{isActive : 1}
+        }).exec()
     }
     else {
         return res.status(400).json("Not Found")
@@ -52,15 +63,16 @@ logIn = async (req, res) => {
 }
 
 //Update Profile function 
+const edit = async (req, res) => {
 
-edit = async (req, res) => {
-    const id = req.userId
-    const {userName, email  ,password} = req.body
+    const {id }= req.params
+    const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
     try {
+        console.log(id,password);
         const user = await UserModel.findOneAndUpdate(id, {
-            userName, email , password
+            userName, email , PhoneNumber , cardNumber , securityCode , plan
         })
-        res.status(200).json('Updated Successfully')
+        res.status(200).json(user)
     }
     catch (err) {
         res.json({
@@ -71,10 +83,10 @@ edit = async (req, res) => {
 
  /// get All User function
 
- getUsers = async (req , res )=>{
+ const getUsers = async (req , res )=>{
 
         const users = await UserModel.find()
-        .populate('profile')
+        .populate
         .exec()
         .then(data=>{
             res.status(200).json(data)
@@ -87,22 +99,23 @@ edit = async (req, res) => {
  }
  //get userById function
 
- getById = async (req ,res)=>{
-    const id = req.userId
+ const getById = async (req ,res)=>{
+    const {id} = req.params
     const user = await UserModel.findById(id)
-    .populate('UserProfile' , ['isKid' , 'userName'])
     .then(data=>{
         res.status(200).json(data)
     })
     .catch(err=>{
+        console.log(err)
         res.status(500).json({
+           
             error:err
         })
     })
  }
 
  //Delete User
- Remove = async (req ,res)=>{
+ const Remove = async (req ,res)=>{
      const {id} = req.params
      const user = await UserModel.findByIdAndDelete(id).then(data=>{
          if(!data)
@@ -122,7 +135,7 @@ edit = async (req, res) => {
 
  // Choose plane
 
- plan  = async(req,res)=>{
+ const plan  = async(req,res)=>{
      const id = req.userId
      const {plan} = req.body   
  const UserPlane = await UserModel.findByIdAndUpdate(id , {
@@ -138,9 +151,39 @@ edit = async (req, res) => {
 
  }
 
+ //add Devices to open
+
+ const devices = async (req , res)=>{
+    const id = req.userId
+    const {device} = req.body   
+const UserDevice = await UserModel.findByIdAndUpdate(id , {
+    $push:{device : device}
+    }).then(data=>{
+      if(!data)       
+      return res.status(404).json("Not Found")
+      return res.status(200).json('Added Device/s')
+       }).catch(err=>{
+        res.status(500).json('Server Error')
+    })
+ } 
+ const removeDevice = async (req , res)=>{
+    const id = req.userId
+    const {device} = req.body   
+const UserDevice = await UserModel.findByIdAndUpdate(id , {
+    $pull:{device : device}
+    }).then(data=>{
+      if(!data)       
+      return res.status(404).json("Not Found")
+      return res.status(200).json('Deleted Device/s')
+       }).catch(err=>{
+        res.status(500).json('Server Error')
+    })
+ } 
+ 
+
 
  // payment
- payment = async(req,res)=>{
+ const payment = async(req,res)=>{
     const id = req.userId
     const {FirstName,LastName , cardNumber,expirationDate,securityCode,PhoneNumber } = req.body
     const UserPayment = await UserModel.findByIdAndUpdate(id , {
@@ -155,7 +198,7 @@ edit = async (req, res) => {
     })
 }
 
-destroy = async (req, res, next) =>{
+const destroy = async (req, res, next) =>{
     UserModel.deleteMany().then(data=>{
         return res.status(200).json('Deleted All')
     }
@@ -165,4 +208,19 @@ destroy = async (req, res, next) =>{
         
 }
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy }
+//log out
+
+logOut = async (req , res )=>{
+    const id = req.userId 
+const UserActive = await UserModel.findByIdAndUpdate(id , {
+    $pull:{isActive : 1}
+    }).then(data=>{
+      if(!data)       
+      return res.status(404).json("Not Found")
+      return res.status(200).json('logged')
+       }).catch(err=>{
+        res.status(500).json('Server Error')
+    })
+}
+
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut}

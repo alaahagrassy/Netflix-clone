@@ -1,9 +1,12 @@
 const ProfileModel = require('../Models/userProfileModel')
 const UserModel = require('../Models/AuthModel')
 
+
 //addProfile
-profile = async(req,res)=>{
-    UserModel.findById(req.body.userId)
+const profile = async(req,res)=>{
+    const userid = req.userId
+    const {userName , avatar } = req.body
+    UserModel.findById(userid)
         .then(user => {
             if (!user) {
                 return res.status(404).json({
@@ -11,8 +14,9 @@ profile = async(req,res)=>{
                 })
             }
             const order = new ProfileModel({
-                isKid: req.body.isKid,
-                userId:req.body.userId
+            user: userid,
+                userName,
+                avatar
             });
             order.save()
                 .then(
@@ -29,10 +33,9 @@ profile = async(req,res)=>{
 }
 
 
-getUsers = async (req , res )=>{
-
+const getUsers = async (req , res )=>{
     const profile = await ProfileModel.find()
-    .populate('userId' , ['userName' , 'avatar'])
+    .populate('user' ,'userName')
     .exec()
     .then(data=>{
         res.status(200).json(data)
@@ -43,9 +46,21 @@ getUsers = async (req , res )=>{
         })
     })
 }
+const getUser = async (req , res )=>{
+    const user = req.userId
+    const profile = await ProfileModel.find({user}).populate('user' , ['userName' , 'email'] )
+    .then(data=>{
+        if(!data.length)
+        return res.status(404).json('Not Found')
+
+        res.status(200).json(data)
+    }).catch(err=>{
+        res.status(500).json(err)
+    })
+}
 
 //Edit 
-EditProfile = async(req,res)=>{
+const EditProfile = async(req,res)=>{
     const {id} = req.params
     const {userName , isKid} = req.body
     const user = await ProfileModel.findByIdAndUpdate(id ,{
@@ -59,7 +74,7 @@ EditProfile = async(req,res)=>{
 
 //deleteProfile 
 
-deleteProfile = async(req,res)=>{
+const deleteProfile = async(req,res)=>{
     const {id} = req.params
     const delUserProfile = await ProfileModel.findByIdAndDelete(id)
     .then(data=>{
@@ -68,5 +83,13 @@ deleteProfile = async(req,res)=>{
         res.status(500).json("Server Error")
     }) 
 }
+deleteAllprofiles = async(req,res)=>{
+    const delUserProfile = await ProfileModel.deleteMany()
+    .then(data=>{
+        res.status(200).json("deleted Successfully")
+    }).catch(err=>{
+        res.status(500).json("Server Error")
+    }) 
+}
 
-module.exports = {profile , EditProfile , deleteProfile,getUsers }
+module.exports = {profile , EditProfile , deleteProfile,getUsers,getUser,deleteAllprofiles}

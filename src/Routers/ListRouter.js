@@ -1,11 +1,16 @@
 const router = require('express').Router()
-const {createList , getList , deleteList } =require('../Controllers/ListController')
+const {createList , getList , getLists , deleteList ,updateList} =require('../Controllers/ListController')
 
 //create List
 router.post('/' , createList)
 
 //get all List
-router.get('/' , getList)
+router.get('/all' , getLists)
+
+router.get('/:id' , getList)
+
+//delete List
+router.patch('/:id', updateList)
 
 //delete List
 router.delete('/:id', deleteList)

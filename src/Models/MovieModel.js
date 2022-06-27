@@ -23,7 +23,7 @@ const movieSchema = new mongoose.Schema(
             type:String,
         },
         limit:{
-            type:Number,
+            type:String,
         },
         genre:{
             type:[String]
@@ -32,6 +32,9 @@ const movieSchema = new mongoose.Schema(
             type:Boolean,
             default:false
         },
+        ContentRating:{
+            type:String
+        }
     }
 )
 module.exports= mongoose.model("movie" , movieSchema);

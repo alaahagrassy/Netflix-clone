@@ -1,8 +1,8 @@
 const router = require('express').Router()
-const {createMovie , getMovie , getAllMovie , deleteMovie , updateMovie , getRandomMovie} =require('../Controllers/MovieController')
+const {createMovie , getMovie , getAllMovie , deleteMovie , updateMovie , getRandomMovie,search} =require('../Controllers/MovieController')
 const {AuthorizeAdmin} =require('../middlewares/AuthorizeAdmin')
 //create movie
-router.post('/' ,AuthorizeAdmin, createMovie)
+router.post('/' , createMovie)
 
 //get all movie
 router.get('/all' , getAllMovie)
@@ -14,10 +14,12 @@ router.get('/random' , getRandomMovie)
 router.get('/:id' , getMovie)
 
 //delete movie
-router.delete('/:id',AuthorizeAdmin, deleteMovie)
+router.delete('/:id', deleteMovie)
 
 //update movie
-router.put('/:id',AuthorizeAdmin,updateMovie)
+router.put('/:id',updateMovie)
+
+router.post('/search',search)
 
 
 

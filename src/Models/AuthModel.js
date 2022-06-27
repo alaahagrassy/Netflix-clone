@@ -10,16 +10,16 @@ const { Schema } = mongoose;
 const { model } = mongoose;
 const UserModel = new Schema({
   userName: {
-    type: String
+    type: String,
   },
-  FirstName:{
-    type:String
+  FirstName: {
+    type: String,
   },
-  LastName:{
-    type:String
+  LastName: {
+    type: String,
   },
-  PhoneNumber:{
-    type: Number
+  PhoneNumber: {
+    type: Number,
   },
   email: {
     type: String,
@@ -36,46 +36,34 @@ const UserModel = new Schema({
   },
   securityCode: {
     type: Number,
-
   },
   isAdmin: {
     type: Boolean,
     default: false,
-},
-avatar: {
+  },
+  avatar: {
     type: String,
-},
-isActive:{
-  type:[Number]
-},
-plan:{
-  type:String,
-  enum : ['Basic' ,'Standard'  , 'Premmium']
-},
-device:{
-  type:String,
-  enum:['Phone' , 'TV' , 'Laptop']
-  
-}
+  },
+  isActive: {
+    type: [Number],
+  },
+  plan: {
+    type: String,
+    enum: ["Basic", "Standard", "Premmium"],
+  },
+  device: {
+    type: [String],
+  },
 });
 
-////hashing password
-// UserModel.pre("save", function (next) {
-//   var user = this;
-//   bcrypt.genSalt(salt_round, function (err, salt) {
-//     bcrypt.hash(user.password, salt, function (err, hash) {
-//       if(this.isModified("password"))
-//       user.password = hash;
-//       next();
-//     });
-//   });
-// });
 UserModel.pre("save", async function () {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password,salt_round );
+    this.password = await bcrypt.hash(this.password, salt_round);
     if (!this.password) throw new Error("password error");
   }
 });
+
+UserModel.pre("findOneAndUpdate", async function () {});
 
 ////comapre password
 UserModel.methods.comparepassword = function (pass) {
@@ -93,7 +81,7 @@ UserModel.methods.generatToken = function () {
       expirationDate: JSON.stringify(this.expirationDate),
       securityCode: JSON.stringify(this.securityCode),
       isAdmin: JSON.stringify(this.isAdmin),
-      isActive : JSON.stringify(this.isActive)
+      isActive: JSON.stringify(this.isActive),
     },
     process.env.jwt_secret
   );
@@ -107,11 +95,12 @@ UserModel.statics.getCurrentUser = async function (token) {
     });
     currentUser._id = JSON.parse(decoded._id);
     currentUser.isAdmin = JSON.parse(decoded.isAdmin);
-    currentUser.isActive = JSON.parse(decoded.isActive)
+    currentUser.isActive = JSON.parse(decoded.isActive);
+
     if (!currentUser) throw new Error("user not found");
     return currentUser;
   } catch (err) {
-     throw new Error("You are not Authorized")
+    throw new Error("You are not Authorized");
   }
 };
 

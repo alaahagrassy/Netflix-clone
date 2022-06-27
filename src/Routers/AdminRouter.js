@@ -4,7 +4,7 @@ const {logIn} = require('../Controllers/AuthController')
 const {CheckIfAdmin} = require('../middlewares/CheckIfAdmin')
 
 //logIn 
-router.get('/login' ,CheckIfAdmin, logIn)
+router.post('/login' ,CheckIfAdmin, logIn)
 
 
 module.exports = router

@@ -1,5 +1,6 @@
 const UserModel = require('../Models/AuthModel')
 const { validationResult } = require('express-validator')
+const { watch } = require('../Models/AuthModel')
 
 
 //register function
@@ -221,12 +222,31 @@ const UserActive = await UserModel.findByIdAndUpdate(id , {
 
 const FavMovies = async (req ,res)=>{
     const id = req.userId
-    const {Fav , watched} = req.body
+    const {Fav} = req.body
     if(!Fav){
         return res.status(404).json("Not Found")
     }
     const favMovie = await UserModel.findByIdAndUpdate(id,{
-        $push:{Fav:Fav , watched : watched}
+        $push:{Fav:Fav}
+    }) 
+    .then(data=>{
+        if(!data)
+        return res.status(404).json({
+            message:'Not Found'
+        })
+        return res.status(200).json('updated')
+    }).catch(err=>{
+        res.status(500).json(err)
+    })
+}
+const watchMovies = async (req ,res)=>{
+    const id = req.userId
+    const {watched} = req.body
+    if(!Fav){
+        return res.status(404).json("Not Found")
+    }
+    const watchMovie = await UserModel.findByIdAndUpdate(id,{
+        $push:{watched : watched}
     }) 
     .then(data=>{
         if(!data)
@@ -242,12 +262,12 @@ const FavMovies = async (req ,res)=>{
 
 const DeletFav = async (req ,res)=>{
     const id = req.userId
-    const {Fav ,watched} = req.body
+    const {Fav} = req.body
     if(!Fav){
         return res.status(404).json("Not Found")
     }
     const favMovie = await UserModel.findByIdAndUpdate(id,{
-        $pull:{Fav:Fav} , $pull:{watched:watched}
+        $pull:{Fav:Fav , watched : watched}
     }) 
     .then(data=>{
         if(!data)
@@ -265,4 +285,4 @@ const DeletFav = async (req ,res)=>{
 
 
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut,FavMovies,DeletFav}
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut,FavMovies,DeletFav ,watchMovies}

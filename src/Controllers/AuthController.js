@@ -86,7 +86,7 @@ const edit = async (req, res) => {
  const getUsers = async (req , res )=>{
 
         const users = await UserModel.find()
-        .populate
+        .populate('Fav')
         .exec()
         .then(data=>{
             res.status(200).json(data)
@@ -102,7 +102,7 @@ const edit = async (req, res) => {
  const getById = async (req ,res)=>{
     const id = req.userId
     const user = await UserModel.findById(id)
-    .populate('UserProfile')
+    .populate('Fav')
     .then(data=>{
         res.status(200).json(data)
     })
@@ -224,4 +224,30 @@ const UserActive = await UserModel.findByIdAndUpdate(id , {
     })
 }
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut}
+
+
+//Fav Movies
+
+const FavMovies = async (req ,res)=>{
+    const id = req.userId
+    const {Fav} = req.body
+
+    if(!Fav){
+        return res.status(404).json("Not Found")
+    }
+    const favMovie = await UserModel.findByIdAndUpdate(id,{
+        $push:{Fav : Fav}
+    })
+    .then(data=>{
+        if(!data)
+        return res.status(404).json({
+            message:'Not Found'
+        })
+        return res.status(200).json(data)
+    }).catch(err=>{
+        res.status(500).json(err)
+    })
+}
+
+
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut,FavMovies}

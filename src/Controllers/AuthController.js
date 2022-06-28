@@ -81,11 +81,10 @@ const edit = async (req, res) => {
 const editForAdmin = async (req, res) => {
 
     const {id}= req.params
-    const {userName, email , PhoneNumber , cardNumber , securityCode ,password, plan} = req.body
+    const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
     try {
-        console.log(id,password);
-        const user = await UserModel.findOneAndUpdate(id, {
-            userName, email , PhoneNumber , cardNumber , securityCode , plan,password
+        const user = await UserModel.findByIdAndUpdate(id, {
+            userName, email , PhoneNumber , cardNumber , securityCode , plan
         })
         res.status(200).json('updataed')
     }
@@ -251,19 +250,7 @@ const UserActive = await UserModel.findByIdAndUpdate(id , {
 const FavMovies = async (req ,res)=>{
     const id = req.userId
     const {Fav} = req.body
-    const Movieid = await MovieModel.findById(Fav)
-    if(!Movieid){
-        return res.status(404).json("Not Found")
-    }
-    const user = await UserModel.findById(id)
-    const arrayFav = user.Fav
-   const existFav =  arrayFav.filter(el=>{
-       if(el === Fav)
-       return el
-    })
-   if(existFav.length)
-   return res.status(200).json('Exist')
-
+    console.log(Fav);
     const favMovie = await UserModel.findByIdAndUpdate(id,{
         $push:{Fav:Fav}
     }) 

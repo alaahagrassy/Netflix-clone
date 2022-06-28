@@ -85,7 +85,7 @@ const edit = async (req, res) => {
  const getUsers = async (req , res )=>{
 
         const users = await UserModel.find()
-        .populate('Fav')
+        .populate(['Fav' , 'watched'])
         .exec()
         .then(data=>{
             res.status(200).json(data)
@@ -98,7 +98,8 @@ const edit = async (req, res) => {
 
  const getById = async (req ,res)=>{
     const id = req.userId
-    const user = await UserModel.findById(id).populate('Fav')
+    const user = await UserModel.findById(id)
+    .populate(['Fav' , 'watched'])
     .then(data=>{
         res.status(200).json(data)
     })

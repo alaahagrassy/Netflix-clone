@@ -24,7 +24,7 @@ const register = async (req, res, next) => {
     const token = await NewUser.generatToken();
     if(!token)
     return res.json('Error')
-    return res.status(200).json({token})
+    return res.status(200).json({user:NewUser,token})
     }catch(err){
         console.log(err);
         return res.status(500).json('Server Error ')
@@ -75,9 +75,8 @@ const edit = async (req, res) => {
         res.status(200).json(user)
     }
     catch (err) {
-        res.json({
-            message: err
-        })
+        console.log(err);
+        res.json(err)
     }
 }
 
@@ -86,34 +85,27 @@ const edit = async (req, res) => {
  const getUsers = async (req , res )=>{
 
         const users = await UserModel.find()
-        .populate('Fav')
+        .populate(['Fav' , 'watched'])
         .exec()
         .then(data=>{
             res.status(200).json(data)
         }).catch(err=>{
             console.log(err);
-            res.status(500).json({
-                error: err
-            })
+            res.status(500).json(err)
         })
  }
  //get userById function
 
  const getById = async (req ,res)=>{
-    const {id} = req.params
+    const id = req.userId
     const user = await UserModel.findById(id)
-
-    .populate('Fav')
-
+    .populate(['Fav' , 'watched'])
     .then(data=>{
         res.status(200).json(data)
     })
     .catch(err=>{
         console.log(err)
-        res.status(500).json({
-           
-            error:err
-        })
+        res.status(500).json(err)
     })
  }
 
@@ -129,9 +121,7 @@ const edit = async (req, res) => {
              message:'Deleted'
          })
      }).catch(err=>{
-         res.status(500).json({
-             message : err
-         })
+         res.status(500).json(err)
      })
  }
 
@@ -148,7 +138,6 @@ const edit = async (req, res) => {
        return res.status(404).json("Not Found")
        return res.status(200).json('Updated')
         }).catch(err=>{
-         console.log(err.message)
          res.status(500).json('Server Error')
      })
 
@@ -232,24 +221,48 @@ const UserActive = await UserModel.findByIdAndUpdate(id , {
 
 const FavMovies = async (req ,res)=>{
     const id = req.userId
-    const {Fav} = req.body
-
+    const {Fav , watched} = req.body
     if(!Fav){
         return res.status(404).json("Not Found")
     }
     const favMovie = await UserModel.findByIdAndUpdate(id,{
-        $push:{Fav : Fav}
-    })
+        $push:{Fav:Fav , watched : watched}
+    }) 
     .then(data=>{
         if(!data)
         return res.status(404).json({
             message:'Not Found'
         })
-        return res.status(200).json(data)
+        return res.status(200).json('updated')
     }).catch(err=>{
         res.status(500).json(err)
     })
 }
 
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut,FavMovies}
+const DeletFav = async (req ,res)=>{
+    const id = req.userId
+    const {Fav ,watched} = req.body
+    if(!Fav){
+        return res.status(404).json("Not Found")
+    }
+    const favMovie = await UserModel.findByIdAndUpdate(id,{
+        $pull:{Fav:Fav} , $pull:{watched:watched}
+    }) 
+    .then(data=>{
+        if(!data)
+        return res.status(404).json({
+            message:'Not Found'
+        })
+        return res.status(200).json('updated')
+    }).catch(err=>{
+        res.status(500).json(err)
+    })
+}
+
+
+
+
+
+
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut,FavMovies,DeletFav}

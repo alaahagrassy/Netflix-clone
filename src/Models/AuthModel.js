@@ -71,12 +71,6 @@ UserModel.pre("save", async function () {
   }
 });
 
-UserModel.pre("findOneAndUpdate" , async function(){
-
-})
-
-
-
 
 ////comapre password
 UserModel.methods.comparepassword = function (pass) {

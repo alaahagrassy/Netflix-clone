@@ -19,7 +19,6 @@ const UpdateUser = Joi.object({
             minDomainSegments: 2,
             tlds: { allow: ["com", "net"] },
         }),
-    password: Joi.string().min(6),
 })
 
 const Userpayment = Joi.object({

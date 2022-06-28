@@ -239,6 +239,27 @@ const FavMovies = async (req ,res)=>{
     })
 }
 
+//watch Movie
+const watchedMovies = async (req ,res)=>{
+    const id = req.userId
+    const {watched} = req.body
+    if(!watched){
+        return res.status(404).json("Not Found")
+    }
+    const watchedMovie = await UserModel.findByIdAndUpdate(id,{
+        $push:{watched : watched}
+    }) 
+    .then(data=>{
+        if(!data)
+        return res.status(404).json({
+            message:'Not Found'
+        })
+        return res.status(200).json('updated')
+    }).catch(err=>{
+        res.status(500).json(err)
+    })
+}
+
 
 const DeletFav = async (req ,res)=>{
     const id = req.userId
@@ -265,4 +286,4 @@ const DeletFav = async (req ,res)=>{
 
 
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,removeDevice ,logOut,FavMovies,DeletFav}
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,payment,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,FavMovies,DeletFav}

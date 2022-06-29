@@ -1,6 +1,8 @@
 const UserModel = require('../Models/AuthModel')
 const MovieModel = require('../Models/MovieModel')
 const _ =require ('lodash')
+const salt_round = Number(process.env.salt_rounds);
+const bcrypt = require("bcrypt");
 
 //register function
 const register = async (req, res, next) => {
@@ -64,12 +66,13 @@ const register = async (req, res, next) => {
 
 //Update Profile function 
 const edit = async (req, res) => {
-
+    
     const id= req.userId
-    const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
+    const {userName, email , PhoneNumber , cardNumber , securityCode,password , plan} = req.body
+  let hashedpassword = await bcrypt.hash(password,salt_round );
     try {
-        const user = await UserModel.findOneAndUpdate(id, {
-            userName, email , PhoneNumber , cardNumber , securityCode , plan
+        const user = await UserModel.findByIdAndUpdate(id, {
+            userName, email , PhoneNumber , cardNumber , securityCode , plan,password:hashedpassword
         })
         res.status(200).json(user)
     }
@@ -200,23 +203,6 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
     })
  } 
  
-
-
- // payment
- const payment = async(req,res)=>{
-    const id = req.userId
-    const {FirstName,LastName , cardNumber,expirationDate,securityCode,PhoneNumber } = req.body
-    const UserPayment = await UserModel.findByIdAndUpdate(id , {
-       FirstName ,LastName ,cardNumber , expirationDate ,securityCode, PhoneNumber
-    }).then(data=>{
-      if(!data)
-      return res.status(404).json("Not Found")
-
-      return res.status(200).json('Updated')
-    }).catch(err=>{
-        res.status(500).json('Server Error')
-    })
-}
 
 const destroy = async (req, res, next) =>{
     UserModel.deleteMany().then(data=>{

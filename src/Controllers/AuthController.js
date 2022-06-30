@@ -41,7 +41,7 @@ const register = async (req, res, next) => {
     if (FindUser) {
         const copmarePassword = await FindUser.comparepassword(password)
         if (!copmarePassword) {
-            return res.json('Invalid email or password')
+            return res.status(404).json('Invalid email or password')
         }
 
         if(FindUser.plan==='Basic'&& FindUser.isActive.length===1)

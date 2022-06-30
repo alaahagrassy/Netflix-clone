@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
+const asyncHandler = require('express-async-handler')
+
 const salt_round = Number(process.env.salt_rounds);
 const jwt = require("jsonwebtoken");
 const util = require("util");
@@ -11,12 +13,6 @@ const { model } = mongoose;
 const UserModel = new Schema({
   userName: {
     type: String
-  },
-  FirstName:{
-    type:String
-  },
-  LastName:{
-    type:String
   },
   PhoneNumber:{
     type: Number
@@ -31,13 +27,6 @@ const UserModel = new Schema({
   password: {
     type: String,
   },
-  cardNumber: {
-    type: Number,
-  },
-  securityCode: {
-    type: Number,
-
-  },
   isAdmin: {
     type: Boolean,
     default: false,
@@ -49,8 +38,7 @@ isActive:{
   type:[Number]
 },
 plan:{
-  type:String,
-  enum : ['Basic' ,'Standard'  , 'Premmium']
+  type:String
 },
 device:{
   type:[String]
@@ -95,7 +83,7 @@ UserModel.methods.generatToken = function () {
   );
 };
 
-UserModel.statics.getCurrentUser = async function (token) {
+UserModel.statics.getCurrentUser = asyncHandler(async function (token) {
   try {
     const decoded = await verify(token, process.env.jwt_secret);
     const currentUser = await this.findOne({
@@ -110,6 +98,6 @@ UserModel.statics.getCurrentUser = async function (token) {
   } catch (error) {
      throw new Error("You are not Authorized")
   }
-};
+});
 
 module.exports = model("User", UserModel);

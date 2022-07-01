@@ -317,4 +317,4 @@ const DeletFav = async (req ,res)=>{
 
 
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,payment,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav}
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav}

@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
-const asyncHandler = require('express-async-handler')
-
 const salt_round = Number(process.env.salt_rounds);
 const jwt = require("jsonwebtoken");
 const util = require("util");
@@ -83,7 +81,7 @@ UserModel.methods.generatToken = function () {
   );
 };
 
-UserModel.statics.getCurrentUser = asyncHandler(async function (token) {
+UserModel.statics.getCurrentUser = async function (token) {
   try {
     const decoded = await verify(token, process.env.jwt_secret);
     const currentUser = await this.findOne({
@@ -98,6 +96,6 @@ UserModel.statics.getCurrentUser = asyncHandler(async function (token) {
   } catch (error) {
      throw new Error("You are not Authorized")
   }
-});
+};
 
 module.exports = model("User", UserModel);

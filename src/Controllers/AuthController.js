@@ -166,7 +166,6 @@ const editForAdmin = async (req, res) => {
         plan
      }).then(data=>{
        if(!data)       
-       return res.status(404).json("Not Found")
        return res.status(200).json('Updated')
         }).catch(err=>{
          res.status(500).json('Server Error')

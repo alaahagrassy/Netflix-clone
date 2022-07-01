@@ -93,7 +93,7 @@ const updateMovie = async (req , res)=>{
 const search = async (req , res)=>{
     const q = req.body.q
     if (q === "" || q === " ")
-    return res.status(200).json([])
+    return res.status(404).json('there is no result match')
     movieModel.find({
         title :{
             $regex : q , $options:'i'
@@ -102,6 +102,8 @@ const search = async (req , res)=>{
         _id:0,
         __v:0
     }, function (err ,data){
+        if(!data.length)
+        return res.status(404).json('there is no result match')
         res.json(data)
     }
     ).limit(10)

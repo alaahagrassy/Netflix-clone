@@ -165,7 +165,6 @@ const editForAdmin = async (req, res) => {
  const UserPlane = await UserModel.findByIdAndUpdate(id , {
         plan
      }).then(data=>{
-       if(!data)       
        return res.status(200).json('Updated')
         }).catch(err=>{
          res.status(500).json('Server Error')
@@ -180,8 +179,7 @@ const editForAdmin = async (req, res) => {
     const {device} = req.body   
 const UserDevice = await UserModel.findByIdAndUpdate(id , {
     $push:{device : device}
-    }).then(data=>{
-      if(!data)       
+    }).then(data=>{   
       return res.status(200).json('Added Device/s')
        }).catch(err=>{
         res.status(500).json('Server Error')
@@ -193,8 +191,6 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
 const UserDevice = await UserModel.findByIdAndUpdate(id , {
     $pull:{device : device}
     }).then(data=>{
-      if(!data)       
-      return res.status(404).json("Not Found")
       return res.status(200).json('Deleted Device/s')
        }).catch(err=>{
         res.status(500).json('Server Error')
@@ -219,8 +215,6 @@ logOut = async (req , res )=>{
 const UserActive = await UserModel.findByIdAndUpdate(id , {
     $pull:{isActive : 1}
     }).then(data=>{
-      if(!data)       
-      return res.status(404).json("Not Found")
       return res.status(200).json('logged')
        }).catch(err=>{
         res.status(500).json('Server Error')

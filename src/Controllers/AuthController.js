@@ -68,11 +68,10 @@ const register = async (req, res, next) => {
 const edit = async (req, res) => {
     
     const id= req.userId
-    const {userName, email , PhoneNumber , cardNumber , securityCode,password , plan} = req.body
-  let hashedpassword = await bcrypt.hash(password,salt_round );
+    const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
     try {
         const user = await UserModel.findByIdAndUpdate(id, {
-            userName, email , PhoneNumber , cardNumber , securityCode , plan,password:hashedpassword
+            userName, email , PhoneNumber , cardNumber , securityCode , plan
         })
         res.status(200).json(user)
     }

@@ -101,7 +101,7 @@ const editForAdmin = async (req, res) => {
 
  const getUsers = async (req , res )=>{
 
-        const users = await UserModel.find()
+        await UserModel.find()
         .populate(['Fav' , 'watched'])
         .exec()
         .then(data=>{
@@ -306,7 +306,33 @@ const DeletFav = async (req ,res)=>{
 }
 
 
+// change password
+
+const ChangePassword = async (req, res) => {
+    const id = req.userId
+    const Cpassword = req.body.Cpassword
+    const {password} = req.body
+    const ConfirmPassword =  req.body.ConfirmPassword
+    const Fuser = await UserModel.findById(id)
+    if (Fuser){
+        const copmarePass = await Fuser.comparepassword(Cpassword)
+        if (!copmarePass) {
+            return res.status(409).json('Wrong Password')
+        }
+        if(ConfirmPassword !== password)
+        return res.status(404).json('Not Match')
+    }
+    
+    let hashedpassword = await bcrypt.hash(password,salt_round );
+        await Fuser.updateOne({
+        password : hashedpassword
+        })
+
+        return res.status(200).json("Changed")
+
+        
+    
+}
 
 
-
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav}
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav,ChangePassword}

@@ -1,6 +1,8 @@
 const UserModel = require('../Models/AuthModel')
 const MovieModel = require('../Models/MovieModel')
 const _ =require ('lodash')
+const salt_round = Number(process.env.salt_rounds);
+const bcrypt = require("bcrypt");
 
 //register function
 const register = async (req, res, next) => {
@@ -39,7 +41,7 @@ const register = async (req, res, next) => {
     if (FindUser) {
         const copmarePassword = await FindUser.comparepassword(password)
         if (!copmarePassword) {
-            return res.json('Invalid email or password')
+            return res.status(404).json('Invalid email or password')
         }
 
         if(FindUser.plan==='Basic'&& FindUser.isActive.length===1)
@@ -64,11 +66,11 @@ const register = async (req, res, next) => {
 
 //Update Profile function 
 const edit = async (req, res) => {
-
+    
     const id= req.userId
     const {userName, email , PhoneNumber , cardNumber , securityCode , plan} = req.body
     try {
-        const user = await UserModel.findOneAndUpdate(id, {
+        const user = await UserModel.findByIdAndUpdate(id, {
             userName, email , PhoneNumber , cardNumber , securityCode , plan
         })
         res.status(200).json(user)
@@ -98,7 +100,7 @@ const editForAdmin = async (req, res) => {
 
  const getUsers = async (req , res )=>{
 
-        const users = await UserModel.find()
+        await UserModel.find()
         .populate(['Fav' , 'watched'])
         .exec()
         .then(data=>{
@@ -162,8 +164,6 @@ const editForAdmin = async (req, res) => {
  const UserPlane = await UserModel.findByIdAndUpdate(id , {
         plan
      }).then(data=>{
-       if(!data)       
-       return res.status(404).json("Not Found")
        return res.status(200).json('Updated')
         }).catch(err=>{
          res.status(500).json('Server Error')
@@ -178,9 +178,7 @@ const editForAdmin = async (req, res) => {
     const {device} = req.body   
 const UserDevice = await UserModel.findByIdAndUpdate(id , {
     $push:{device : device}
-    }).then(data=>{
-      if(!data)       
-      return res.status(404).json("Not Found")
+    }).then(data=>{   
       return res.status(200).json('Added Device/s')
        }).catch(err=>{
         res.status(500).json('Server Error')
@@ -192,31 +190,12 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
 const UserDevice = await UserModel.findByIdAndUpdate(id , {
     $pull:{device : device}
     }).then(data=>{
-      if(!data)       
-      return res.status(404).json("Not Found")
       return res.status(200).json('Deleted Device/s')
        }).catch(err=>{
         res.status(500).json('Server Error')
     })
  } 
  
-
-
- // payment
- const payment = async(req,res)=>{
-    const id = req.userId
-    const {FirstName,LastName , cardNumber,expirationDate,securityCode,PhoneNumber } = req.body
-    const UserPayment = await UserModel.findByIdAndUpdate(id , {
-       FirstName ,LastName ,cardNumber , expirationDate ,securityCode, PhoneNumber
-    }).then(data=>{
-      if(!data)
-      return res.status(404).json("Not Found")
-
-      return res.status(200).json('Updated')
-    }).catch(err=>{
-        res.status(500).json('Server Error')
-    })
-}
 
 const destroy = async (req, res, next) =>{
     UserModel.deleteMany().then(data=>{ 
@@ -235,8 +214,6 @@ logOut = async (req , res )=>{
 const UserActive = await UserModel.findByIdAndUpdate(id , {
     $pull:{isActive : 1}
     }).then(data=>{
-      if(!data)       
-      return res.status(404).json("Not Found")
       return res.status(200).json('logged')
        }).catch(err=>{
         res.status(500).json('Server Error')
@@ -250,7 +227,19 @@ const UserActive = await UserModel.findByIdAndUpdate(id , {
 const FavMovies = async (req ,res)=>{
     const id = req.userId
     const {Fav} = req.body
-    console.log(Fav);
+    const Movieid = await MovieModel.findById(Fav)
+    if(!Movieid){
+        return res.status(404).json("Not Found")
+    }
+    const user = await UserModel.findById(id)
+    const arrayFav = user.Fav
+   const existFav =  arrayFav.filter(el=>{
+       if(el === Fav)
+       return el
+    })
+   if(existFav.length)
+   return res.status(200).json('Exist')
+
     const favMovie = await UserModel.findByIdAndUpdate(id,{
         $push:{Fav:Fav}
     }) 
@@ -316,7 +305,33 @@ const DeletFav = async (req ,res)=>{
 }
 
 
+// change password
+
+const ChangePassword = async (req, res) => {
+    const id = req.userId
+    const Cpassword = req.body.Cpassword
+    const {password} = req.body
+    const ConfirmPassword =  req.body.ConfirmPassword
+    const Fuser = await UserModel.findById(id)
+    if (Fuser){
+        const copmarePass = await Fuser.comparepassword(Cpassword)
+        if (!copmarePass) {
+            return res.status(409).json('Wrong Password')
+        }
+        if(ConfirmPassword !== password)
+        return res.status(404).json('Not Match')
+    }
+    
+    let hashedpassword = await bcrypt.hash(password,salt_round );
+        await Fuser.updateOne({
+        password : hashedpassword
+        })
+
+        return res.status(200).json("Changed")
+
+        
+    
+}
 
 
-
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,payment,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav}
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav,ChangePassword}

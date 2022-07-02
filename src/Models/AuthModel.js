@@ -12,12 +12,6 @@ const UserModel = new Schema({
   userName: {
     type: String
   },
-  FirstName:{
-    type:String
-  },
-  LastName:{
-    type:String
-  },
   PhoneNumber:{
     type: Number
   },
@@ -56,12 +50,12 @@ device:{
   type:[String]
   
 },
-Fav : {
-  type: mongoose.Schema.Types.Array,ref:'movie',
-},
-watched : {
-  type: mongoose.Schema.Types.Array,ref:'movie',
-}
+Fav :[ {
+  type: mongoose.Schema.Types.ObjectId,ref:'movie',
+}],
+watched : [{
+  type: mongoose.Schema.Types.ObjectId,ref:'movie',
+}]
 });
 
 UserModel.pre("save", async function () {

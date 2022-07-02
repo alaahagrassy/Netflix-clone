@@ -43,11 +43,11 @@ const register = async (req, res, next) => {
         }
 
         if(FindUser.plan==='Basic'&& FindUser.isActive.length===1)
-        return res.json("You can't login")
+        return res.status(404).json("You can't login")
         else if(FindUser.plan==='Standard'&& FindUser.isActive.length===2)
-        return res.json("you can't logIn")
+        return res.status(404).json("you can't logIn")
         else if(FindUser.plan==='Premmium'&& FindUser.isActive.length===4)
-        return res.json("you can't logIn")
+        return res.status(404).json("you can't logIn")
         
         const token = await FindUser.generatToken();
         if(!token)
@@ -219,7 +219,7 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
 }
 
 const destroy = async (req, res, next) =>{
-    UserModel.deleteMany().then(data=>{
+    UserModel.deleteMany().then(data=>{ 
         return res.status(200).json('Deleted All')
     }
         ).catch(err=>{

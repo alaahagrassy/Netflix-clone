@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router() 
-const {register , logIn , edit ,getUsers,getById,Remove ,plan,getuser,editForAdmin,ChangePassword,destroy,devices,watchedMovies,removeDevice,DeletFav,logOut,FavMovies} = require('../Controllers/AuthController')
+const {register , logIn , edit ,getUsers,getById,Remove ,plan,getuser,editForAdmin,DelwatchedMovies,ChangePassword,destroy,devices,watchedMovies,removeDevice,DeletFav,logOut,FavMovies} = require('../Controllers/AuthController')
 const {validateSignUp , valdateUpdateUser,paymentValidation } = require('../Validations/UserValidation')
 const {authorizeUser} = require('../middlewares/AuthorizeUser')
 const {checkForLoggedIn} = require('../middlewares/CheckForLogged')
@@ -22,6 +22,7 @@ router.put('/logout',authorizeUser,logOut)
 router.put('/fav',authorizeUser,FavMovies)
 router.put('/watched',authorizeUser,watchedMovies)
 router.put('/delFav',authorizeUser,DeletFav)
+router.put('/delwatched',authorizeUser,DelwatchedMovies)
 
 
 //forAdmin

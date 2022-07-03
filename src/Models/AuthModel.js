@@ -13,7 +13,8 @@ const UserModel = new Schema({
     type: String
   },
   PhoneNumber:{
-    type: Number
+    type: Number,
+    default: 'Non'
   },
   email: {
     type: String,
@@ -24,13 +25,6 @@ const UserModel = new Schema({
   },
   password: {
     type: String,
-  },
-  cardNumber: {
-    type: Number,
-  },
-  securityCode: {
-    type: Number,
-
   },
   isAdmin: {
     type: Boolean,

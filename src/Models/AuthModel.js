@@ -14,7 +14,7 @@ const UserModel = new Schema({
   },
   PhoneNumber:{
     type: Number,
-    default: 'Non'
+    default: '+02'
   },
   email: {
     type: String,

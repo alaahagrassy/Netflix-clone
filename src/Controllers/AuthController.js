@@ -234,13 +234,14 @@ const FavMovies = async (req ,res)=>{
     const user = await UserModel.findById(id)
     const arrayFav = user.Fav
    const existFav =  arrayFav.filter(el=>{
-       if(el === Fav)
+       if(el.valueOf() === Fav)
        return el
     })
+
    if(existFav.length)
    return res.status(200).json('Exist')
 
-    const favMovie = await UserModel.findByIdAndUpdate(id,{
+      await UserModel.findByIdAndUpdate(id,{
         $push:{Fav:Fav}
     }) 
     .then(data=>{
@@ -263,14 +264,40 @@ const watchedMovies = async (req ,res)=>{
     const user = await UserModel.findById(id)
     const arraywatched = user.watched
    const existwatched =  arraywatched.filter(el=>{
-       if(el === watched)
+       if(el.valueOf() === watched)
        return el
     })
    if(existwatched.length)
    return res.status(200).json('Exist')
 
-    const watchedMovie = await UserModel.findByIdAndUpdate(id,{
+   await UserModel.findByIdAndUpdate(id,{
         $push:{watched : watched}
+    }) 
+    .then(data=>{
+        return res.status(200).json('updated')
+    }).catch(err=>{
+        res.status(500).json(err)
+    })
+}
+
+//delet Fav
+const DeletFav = async (req ,res)=>{
+    const id = req.userId
+    const {Fav} = req.body
+    const Movieid = await MovieModel.findById(Fav)
+    if(!Movieid){
+        return res.status(404).json("Not Found")
+    }
+    const user = await UserModel.findById(id)
+    const arrayFav = user.Fav.valueOf()
+   const existFav =  arrayFav.filter(el=>{
+       if(el.valueOf() === Fav)
+       return el
+    })
+    if(!existFav.length)
+    return res.status(200).json('Not Exist')
+     await UserModel.findByIdAndUpdate(id,{
+        $pull:{Fav:Fav}
     }) 
     .then(data=>{
         if(!data)
@@ -282,22 +309,31 @@ const watchedMovies = async (req ,res)=>{
         res.status(500).json(err)
     })
 }
-
-
-const DeletFav = async (req ,res)=>{
+//Delete watched
+const DelwatchedMovies = async (req ,res)=>{
     const id = req.userId
-    const {Fav} = req.body
-    if(!Fav){
+    const {watched} = req.body
+    const Movieid = await MovieModel.findById(watched)
+    if(!Movieid){
         return res.status(404).json("Not Found")
     }
-    const favMovie = await UserModel.findByIdAndUpdate(id,{
-        $pull:{Fav:Fav}
+
+    const user = await UserModel.findById(id)
+    const arraywatched = user.watched
+    console.log(arraywatched);
+   const existwatched =  arraywatched.filter(el=>{
+    console.log(el.valueOf() , watched);
+       if(el.valueOf() === watched)
+       return el
+    })
+    console.log(existwatched.length);
+   if(!existwatched.length)
+   return res.status(200).json('Not Exist')
+
+     await UserModel.findByIdAndUpdate(id,{
+        $pull:{watched : watched}
     }) 
     .then(data=>{
-        if(!data)
-        return res.status(404).json({
-            message:'Not Found'
-        })
         return res.status(200).json('updated')
     }).catch(err=>{
         res.status(500).json(err)
@@ -334,4 +370,4 @@ const ChangePassword = async (req, res) => {
 }
 
 
-module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,plan,destroy,devices ,watchedMovies,removeDevice ,logOut,getuser,FavMovies,DeletFav,ChangePassword}
+module.exports = { register, logIn, edit ,getUsers,getById,Remove,editForAdmin,plan,destroy,devices ,watchedMovies,removeDevice ,DelwatchedMovies,logOut,getuser,FavMovies,DeletFav,ChangePassword}

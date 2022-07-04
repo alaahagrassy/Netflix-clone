@@ -239,7 +239,7 @@ const FavMovies = async (req ,res)=>{
     })
 
    if(existFav.length)
-   return res.status(200).json('Exist')
+   return res.status(404).json('Exist')
 
       await UserModel.findByIdAndUpdate(id,{
         $push:{Fav:Fav}
@@ -268,7 +268,7 @@ const watchedMovies = async (req ,res)=>{
        return el
     })
    if(existwatched.length)
-   return res.status(200).json('Exist')
+   return res.status(404).json('Exist')
 
    await UserModel.findByIdAndUpdate(id,{
         $push:{watched : watched}
@@ -295,15 +295,11 @@ const DeletFav = async (req ,res)=>{
        return el
     })
     if(!existFav.length)
-    return res.status(200).json('Not Exist')
+    return res.status(404).json('Not Exist')
      await UserModel.findByIdAndUpdate(id,{
         $pull:{Fav:Fav}
     }) 
     .then(data=>{
-        if(!data)
-        return res.status(404).json({
-            message:'Not Found'
-        })
         return res.status(200).json('updated')
     }).catch(err=>{
         res.status(500).json(err)
@@ -328,7 +324,7 @@ const DelwatchedMovies = async (req ,res)=>{
     })
     console.log(existwatched.length);
    if(!existwatched.length)
-   return res.status(200).json('Not Exist')
+   return res.status(404).json('Not Exist')
 
      await UserModel.findByIdAndUpdate(id,{
         $pull:{watched : watched}

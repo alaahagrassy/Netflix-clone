@@ -32,6 +32,7 @@ const UserModel = new Schema({
 },
 avatar: {
     type: String,
+    default: "https://i.pinimg.com/originals/b6/77/cd/b677cd1cde292f261166533d6fe75872.png"
 },
 isActive:{
   type:[Number]

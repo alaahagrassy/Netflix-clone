@@ -18,7 +18,7 @@ const register = async (req, res, next) => {
         userName : username,
         avatar
     })
-    try{
+    try{        
     const NewUser = await AddUser.save();
     await  NewUser.updateOne({
         $push:{isActive : 1}

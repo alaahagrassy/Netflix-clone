@@ -18,7 +18,7 @@ const register = async (req, res, next) => {
         userName : username,
         avatar
     })
-    try{
+    try{        
     const NewUser = await AddUser.save();
     await  NewUser.updateOne({
         $push:{isActive : 1}
@@ -198,7 +198,7 @@ const UserDevice = await UserModel.findByIdAndUpdate(id , {
  
 
 const destroy = async (req, res, next) =>{
-    UserModel.deleteMany().then(data=>{
+    UserModel.deleteMany().then(data=>{ 
         return res.status(200).json('Deleted All')
     }
         ).catch(err=>{
